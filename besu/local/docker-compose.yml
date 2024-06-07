@@ -1,0 +1,77 @@
+services:
+  besu-1:
+    image: my-besu:latest
+    ports:
+      - 11303:30303
+      - 11045:8545
+      - 11046:8546
+    environment:
+      - BESU_RPC_HTTP_ENABLED=true
+      - BESU_RPC_HTTP_API=ETH,NET,QBFT
+      - BESU_RPC_WS_ENABLED=true
+      - BESU_DATA_PATH=/var/lib/besu/data
+      - BESU_GENESIS_FILE=/var/lib/besu/genesis.json
+      - BESU_HOST_ALLOWLIST=*
+      - BESU_HTTP_CORS_ORIGINS=all
+    volumes:
+      - ./besu-1/data:/var/lib/besu/data
+  besu-2:
+    image: my-besu:latest
+    ports:
+      - 12303:30303
+      - 12045:8545
+      - 12046:8546
+    environment:
+      - BESU_RPC_HTTP_ENABLED=true
+      - BESU_RPC_HTTP_API=ETH,NET,QBFT
+      - BESU_RPC_WS_ENABLED=true
+      - BESU_DATA_PATH=/var/lib/besu/data
+      - BESU_GENESIS_FILE=/var/lib/besu/genesis.json
+      - BESU_HOST_ALLOWLIST=*
+      - BESU_HTTP_CORS_ORIGINS=all
+      - BESU_RPC_HTTP_CORS_ORIGINS=all
+      - BESU_XDNS_ENABLED=true
+      - BESU_XDNS_UPDATE_ENABLED=true
+      - BESU_BOOTNODES=enode://9f83e6309a9c3261e6e1cc7edf8c31018c3a83be4660cddb669fa6c581776f216850fd536467d963968d417a528c105be31464226460fa1f2b8b455a4c12992f@besu-1:30303
+    volumes:
+      - ./besu-2/data:/var/lib/besu/data
+  besu-3:
+    image: my-besu:latest
+    ports:
+      - 13303:30303
+      - 13045:8545
+      - 13046:8546
+    environment:
+      - BESU_RPC_HTTP_ENABLED=true
+      - BESU_RPC_HTTP_API=ETH,NET,QBFT
+      - BESU_RPC_WS_ENABLED=true
+      - BESU_DATA_PATH=/var/lib/besu/data
+      - BESU_GENESIS_FILE=/var/lib/besu/genesis.json
+      - BESU_HOST_ALLOWLIST=*
+      - BESU_HTTP_CORS_ORIGINS=all
+      - BESU_RPC_HTTP_CORS_ORIGINS=all
+      - BESU_XDNS_ENABLED=true
+      - BESU_XDNS_UPDATE_ENABLED=true
+      - BESU_BOOTNODES=enode://9f83e6309a9c3261e6e1cc7edf8c31018c3a83be4660cddb669fa6c581776f216850fd536467d963968d417a528c105be31464226460fa1f2b8b455a4c12992f@besu-1:30303
+    volumes:
+      - ./besu-3/data:/var/lib/besu/data
+  besu-4:
+    image: my-besu:latest
+    ports:
+      - 14303:30303
+      - 14045:8545
+      - 14046:8546
+    environment:
+      - BESU_RPC_HTTP_ENABLED=true
+      - BESU_RPC_HTTP_API=ETH,NET,QBFT
+      - BESU_RPC_WS_ENABLED=true
+      - BESU_DATA_PATH=/var/lib/besu/data
+      - BESU_GENESIS_FILE=/var/lib/besu/genesis.json
+      - BESU_HOST_ALLOWLIST=*
+      - BESU_HTTP_CORS_ORIGINS=all
+      - BESU_RPC_HTTP_CORS_ORIGINS=all
+      - BESU_XDNS_ENABLED=true
+      - BESU_XDNS_UPDATE_ENABLED=true
+      - BESU_BOOTNODES=enode://9f83e6309a9c3261e6e1cc7edf8c31018c3a83be4660cddb669fa6c581776f216850fd536467d963968d417a528c105be31464226460fa1f2b8b455a4c12992f@besu-1:30303
+    volumes:
+      - ./besu-4/data:/var/lib/besu/data

@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "besu-node.fullname" . }}-node-network-policy
+  labels:
+    {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
+    azure.workload.identity/use: "true"
+    {{- end }}  
+    app.kubernetes.io/name: besu-node-network-policy
+    app.kubernetes.io/component: node-network-policy
+    app.kubernetes.io/part-of: {{ include "besu-node.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/managed-by: helm
+  namespace: {{ .Release.Namespace }}
+spec:
+  policyTypes:
+  {{- if .Values.networkPolicy.ingress }}
+  - Ingress
+  {{- end }}
+  {{- if .Values.networkPolicy.egress }}
+  - Egress
+  {{- end }}
+  podSelector: {}
+  ingress:
+  {{- if .Values.networkPolicy.ingress }}
+  {{- toYaml .Values.networkPolicy.ingress | nindent 4 }}
+  {{- end }}
+  egress:
+  {{- if .Values.networkPolicy.egress }}
+  {{- toYaml .Values.networkPolicy.egress | nindent 4 }}
+  {{- end }}
