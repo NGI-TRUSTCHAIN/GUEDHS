@@ -1,8 +1,11 @@
 [tool.poetry]
-name = "fedtest"
+name = "governance_ui"
 version = "0.1.0"
 description = ""
-authors = ["António Bezerra <antonio.bezerra@promptlyhealth.com>"]
+authors = [
+    "António Bezerra <antonio.bezerra@promptlyhealth.com>",
+    "Nuno Costa <nunorocosta@gmail.com>"
+]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
@@ -13,7 +16,7 @@ jupyterlab = "^4.2.2"
 notebook = "^7.2.1"
 greenlet = "^3.0.3"
 shiny = "^0.10.2"
-
+pytest = "^8.2.2"
 
 [build-system]
 requires = ["poetry-core"]
