@@ -1,7 +1,7 @@
-import syft as sy
 import pandas as pd
 from shiny import reactive, render
-from ui import login_ui, datasets_ui
+from view import login_ui, datasets_ui
+from governance_ui.auth.login import login
 
 def server(input, output, session):
     login_status = reactive.Value(False)
@@ -19,18 +19,10 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.login)
     def _():
-        try:
-            client = sy.login(
-                url=input.url(),
-                port=input.port(),
-                email=input.email(),
-                password=input.password()
-            )
-            print("Login successful!")
+        client = login(input.url(), input.port(), input.email(), input.password())
+        if client:
             login_status.set(True)
             session.client = client
-        except Exception as e:
-            print(f"Login failed: {e}")
 
     @output
     @render.table
