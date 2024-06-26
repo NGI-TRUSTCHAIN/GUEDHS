@@ -1,26 +1,22 @@
 import pandas as pd
 from shiny import reactive, render, ui
-from governance_ui.view import login_ui, dashboards_ui, datasets_ui, create_dataset_ui
+from governance_ui.view import login_ui, dashboards_ui
 from governance_ui.auth.login import login
+from governance_ui.sections import sections
 
 def server(input, output, session):
     login_status = reactive.Value(False)
-    show_datasets = reactive.Value(True)
-    show_create_dataset = reactive.Value(False)
+    current_section = reactive.Value("datasets")
 
     @output
     @render.ui
     def main_page():
-        client = login("localhost", "8081", "info@openmined.org", "changethis")
-        login_status.set(True)
-        session.client = client
-        return dashboards_ui
-        # if not login_status():
-        #     print("Rendering login UI")
-        #     return login_ui
-        # else:
-        #     print("Rendering datasets UI")
-        #     return dashboards_ui
+        if not login_status():
+            print("Rendering login UI")
+            return login_ui
+        else:
+            print("Rendering datasets UI")
+            return dashboards_ui
 
     @reactive.effect
     @reactive.event(input.login)
@@ -30,32 +26,36 @@ def server(input, output, session):
             login_status.set(True)
             session.client = client
 
-    @reactive.effect
-    @reactive.event(input.show_datasets_button)
-    def handle_show_datasets():
-        show_datasets.set(True)
-        show_create_dataset.set(False)
+    @output
+    @render.ui
+    def sidebar_buttons():
+        return ui.div(
+            [
+                ui.input_action_button(
+                    section["button_id"],
+                    section["button_text"],
+                    class_="btn btn-primary mb-3",
+                    style="width: 200px;"
+                )
+                for section in sections.values()
+            ]
+        )
 
-    @reactive.effect
-    @reactive.event(input.create_dataset_button)
-    def handle_create_datasets():
-        show_datasets.set(False)
-        show_create_dataset.set(True)
+    def handle_section(section):
+        @reactive.effect
+        @reactive.event(input[sections[section]["button_id"]])
+        def section_handler():
+            current_section.set(section)
 
-    # def handle_section(section):
-    #     @reactive.effect
-    #     @reactive.event(input[section])
-    #     # def section_handler():
+        return section_handler
 
-    #     return section_handler
+    for section in sections:
+        handle_section(section)
 
     @output
     @render.ui
     def content_ui():
-        if show_datasets():
-            return datasets_ui
-        elif show_create_dataset():
-            return create_dataset_ui
+        return sections[current_section()]["ui"]
 
     @output
     @render.ui
@@ -81,4 +81,3 @@ def server(input, output, session):
             for dataset in datasets
         ]
         return pd.DataFrame(data)
-
