@@ -15,7 +15,7 @@ def server(input, output, session):
             print("Rendering login UI")
             return login_ui
         else:
-            print("Rendering datasets UI")
+            print("Rendering dashboard UI")
             return dashboards_ui
 
     @reactive.effect
@@ -73,11 +73,34 @@ def server(input, output, session):
         datasets = session.client.datasets
         data = [
             {
-                "id": dataset.id,
+                "id": f"{str(dataset.id)[:8]}...",
                 "name": dataset.name,
                 "updated at": dataset.updated_at,
                 "created at": dataset.created_at
             }
             for dataset in datasets
         ]
-        return pd.DataFrame(data)
+
+        df = pd.DataFrame(data)
+        styled_df = df.style.hide(axis="index").set_table_styles(
+            [
+                {
+                    "selector": "th",
+                    "props": [
+                        ("background-color", "#e5e7eb"),
+                        ("padding", "10px 15px"),
+                    ]
+                },
+                {
+                    "selector": "td",
+                    "props": [
+                        ("background-color", "#f3f4f6"),
+                        ("padding", "10px 15px")
+                    ]
+                }
+            ]
+        ).set_table_attributes(
+            'style="border-radius: 10px; overflow: hidden;"'
+        )
+
+        return styled_df
