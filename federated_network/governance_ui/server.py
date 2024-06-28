@@ -3,6 +3,7 @@ from shiny import reactive, render, ui
 from governance_ui.view import login_ui, dashboards_ui
 from governance_ui.auth.login import login
 from governance_ui.sections import sections
+from governance_ui.federated_operations.datasets import get_datasets_table, register_dataset
 
 def server(input, output, session):
     login_status = reactive.Value(False)
@@ -61,46 +62,27 @@ def server(input, output, session):
     @render.ui
     def datasets_content():
         if login_status():
-            datasets = session.client.datasets
-            if not datasets:
-                return ui.h4("No datasets available.", class_="text-center")
-            else:
+            datasets = session.client.datasets.get_all()
+            if len(datasets) > 0:
                 return ui.output_table("datasets_table")
+            else:
+                return ui.h4("No datasets available.", class_="text-center")
 
     @output
     @render.table
     def datasets_table():
         datasets = session.client.datasets
-        data = [
-            {
-                "id": f"{str(dataset.id)[:8]}...",
-                "name": dataset.name,
-                "updated at": dataset.updated_at,
-                "created at": dataset.created_at
-            }
-            for dataset in datasets
-        ]
+        return get_datasets_table(datasets)
 
-        df = pd.DataFrame(data)
-        styled_df = df.style.hide(axis="index").set_table_styles(
-            [
-                {
-                    "selector": "th",
-                    "props": [
-                        ("background-color", "#e5e7eb"),
-                        ("padding", "10px 15px"),
-                    ]
-                },
-                {
-                    "selector": "td",
-                    "props": [
-                        ("background-color", "#f3f4f6"),
-                        ("padding", "10px 15px")
-                    ]
-                }
-            ]
-        ).set_table_attributes(
-            'style="border-radius: 10px; overflow: hidden;"'
+    @reactive.effect
+    @reactive.event(input.register_dataset)
+    def handle_register_dataset():
+        data_path = input.data() or input.url()
+        register_dataset(
+            session.client,
+            input.dataset_name(),
+            input.dataset_description(),
+            input.asset_name(),
+            input.asset_description(),
+            data_path
         )
-
-        return styled_df
