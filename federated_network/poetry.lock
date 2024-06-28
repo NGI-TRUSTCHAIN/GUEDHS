@@ -4411,6 +4411,20 @@ doc = ["griffe (==0.33.0)", "jupyter", "jupyter-client (<8.0.0)", "pydantic (==1
 test = ["astropy", "bokeh", "coverage", "duckdb", "faicons", "folium", "geodatasets", "geopandas", "holoviews", "ipyleaflet", "missingno", "palmerpenguins", "playwright (>=1.43.0)", "plotly", "plotnine", "psutil", "pytest (>=6.2.4)", "pytest-asyncio (>=0.17.2)", "pytest-cov", "pytest-playwright (>=0.3.0)", "pytest-rerunfailures", "pytest-timeout", "pytest-xdist", "ridgeplot", "rsconnect-python", "scikit-learn", "seaborn", "shinywidgets", "suntime", "syrupy", "timezonefinder", "xarray"]
 
 [[package]]
+name = "shiny-validate"
+version = "0.1.1"
+description = "Input Validation for Shiny apps"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "shiny_validate-0.1.1-py3-none-any.whl", hash = "sha256:ec9ddb00c6911fab43607ec437feefd868d28ace04c98e65011a0cb3603edfcc"},
+    {file = "shiny_validate-0.1.1.tar.gz", hash = "sha256:3187f65c8f8dd768361cede476cef6deffed69f674b0d7a0a128a95cf9c0772c"},
+]
+
+[package.dependencies]
+shiny = ">=0.6"
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -5363,4 +5377,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "3df313967c7f736adce47616f7a271d17771baf2043bcaded9dab656cf000c64"
+content-hash = "9444f473958eada9c9b1fa9d1778c15d6945653e9e198362ca69babfeb91f416"
