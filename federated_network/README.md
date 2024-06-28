@@ -35,5 +35,5 @@ Follow the examples in the [notebooks](./notebooks) directory to see how to inte
 You can also start the example webapp using:
 
 ```bash
-shiny run --reload --launch-browser ui/app.py
+shiny run --reload --launch-browser governance_ui/app.py
 ```

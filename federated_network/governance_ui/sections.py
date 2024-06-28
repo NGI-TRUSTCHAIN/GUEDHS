@@ -1,4 +1,4 @@
-from governance_ui.view import datasets_ui, create_dataset_ui
+from governance_ui.view import datasets_ui, register_dataset_ui
 
 sections = {
     "datasets": {
@@ -6,9 +6,9 @@ sections = {
         "button_text": "Datasets",
         "ui": datasets_ui
     },
-    "create_dataset": {
-        "button_id": "create_dataset_button",
-        "button_text": "Create Dataset",
-        "ui": create_dataset_ui
+    "register_dataset": {
+        "button_id": "register_dataset_button",
+        "button_text": "Register Dataset",
+        "ui": register_dataset_ui
     }
 }
