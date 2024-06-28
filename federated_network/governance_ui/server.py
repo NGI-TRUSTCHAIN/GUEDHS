@@ -1,4 +1,3 @@
-import pandas as pd
 from shiny import reactive, render, ui
 from governance_ui.view import login_ui, dashboards_ui
 from governance_ui.auth.login import login
@@ -9,7 +8,6 @@ def server(input, output, session):
     login_status = reactive.Value(False)
     current_section = reactive.Value("datasets")
 
-    @output
     @render.ui
     def main_page():
         if not login_status():
@@ -27,7 +25,6 @@ def server(input, output, session):
             login_status.set(True)
             session.client = client
 
-    @output
     @render.ui
     def sidebar_buttons():
         return ui.div(
@@ -53,25 +50,22 @@ def server(input, output, session):
     for section in sections:
         handle_section(section)
 
-    @output
     @render.ui
     def content_ui():
         return sections[current_section()]["ui"]
 
-    @output
     @render.ui
     def datasets_content():
-        if login_status():
-            datasets = session.client.datasets.get_all()
-            if len(datasets) > 0:
-                return ui.output_table("datasets_table")
-            else:
-                return ui.h4("No datasets available.", class_="text-center")
+        datasets = session.client.datasets.get_all()
+        if len(datasets) > 0:
+            return ui.output_table("datasets_table")
+        else:
+            return ui.h4("No datasets available.", class_="text-center")
 
-    @output
     @render.table
+    @reactive.event(input.show_datasets_button, ignore_none=False)
     def datasets_table():
-        datasets = session.client.datasets
+        datasets = session.client.datasets.get_all()
         return get_datasets_table(datasets)
 
     @reactive.effect
