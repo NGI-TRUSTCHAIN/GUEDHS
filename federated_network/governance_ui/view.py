@@ -53,9 +53,15 @@ register_dataset_ui = ui.page_fluid(
                 ui.input_text("asset_name", "Name"),
                 ui.input_text("asset_description", "Description"),
                 ui.div(
-                    ui.input_text("url", "Dataset URL"),
+                    ui.input_text("data_url", "Dataset URL"),
                     ui.p("or", class_="mt-4"),
-                    ui.input_file("data", "Dataset File"),
+                    ui.input_file("data_file", "Dataset File"),
+                    class_="d-flex flex-row gap-5"
+                ),
+                ui.div(
+                    ui.input_text("mock_url", "Mock URL (Optional)"),
+                    ui.p("or", class_="mt-4"),
+                    ui.input_file("mock_file", "Mock File (Optional)"),
                     class_="d-flex flex-row gap-5"
                 ),
                 class_="d-flex flex-column justify-content-center mt-5"

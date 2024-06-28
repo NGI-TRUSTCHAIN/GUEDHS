@@ -48,7 +48,7 @@ def override_input(func, *args, **kwargs):
         return func(*args, **kwargs)
 
 
-def register_dataset(client, dataset_name, dataset_description, asset_name, asset_description, data_path):
+def register_dataset(client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path):
     main_data_subject = sy.DataSubject(
         name="Clinical",
         aliases=["clinical"],
@@ -72,21 +72,32 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
     # Verify if dataset is an URL or a Path
     if isinstance(data_path, str) and data_path.startswith("http"):
         print("Downloading data from URL...")
-        data = pd.read_csv(sy.autocache(data_path))
+        data = pd.read_csv(sy.autocache(data_path), low_memory=False)
     else:
         print("Reading data from file...")
-        data = pd.read_csv(data_path[0]["datapath"])
-
-    mock = data.sample(frac=0.1)
+        data = pd.read_csv(data_path[0]["datapath"], low_memory=False)
 
     asset = sy.Asset(
         name = asset_name,
         description = asset_description,
     )
     asset.set_obj(data)
-    asset.set_mock(mock, mock_is_real=True)
     asset.set_shape(data.shape)
     asset.add_data_subject(data_subject)
+
+    # Verify if mock is an URL or a Path or None
+    if mock_path is not None:
+        if isinstance(mock_path, str) and mock_path.startswith("http"):
+            print("Downloading mock from URL...")
+            mock = pd.read_csv(sy.autocache(mock_path), low_memory=False)
+        else:
+            print("Reading mock from file...")
+            mock = pd.read_csv(mock_path[0]["datapath"], low_memory=False)
+        asset.set_mock(mock, mock_is_real=False)
+    else:
+        print("Creating mock...")
+        mock = data.sample(frac=0.1)
+        asset.set_mock(mock, mock_is_real=True)
 
     dataset.add_asset(asset)
     # client.upload_dataset(dataset)
