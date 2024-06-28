@@ -17,6 +17,7 @@ notebook = "^7.2.1"
 greenlet = "^3.0.3"
 shiny = "^0.10.2"
 pytest = "^8.2.2"
+shiny-validate = "^0.1.1"
 
 [build-system]
 requires = ["poetry-core"]
