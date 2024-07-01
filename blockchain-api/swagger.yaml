@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: GUEDHS
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /permission/get-permission:
+    get:
+      tags:
+        - default
+      summary: Get Permission
+      parameters:
+        - name: permissionUUID
+          in: query
+          schema:
+            type: string
+          example: 3eee62de-d5e9-42ca-9b77-7eb62e145489
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission/request-permission:
+    post:
+      tags:
+        - default
+      summary: Request Permission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                dataUserUUID: Carlos
+                dataCustodianUUID: ULSC
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission/grant-permission:
+    post:
+      tags:
+        - default
+      summary: Grant Permission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                permissionUUID: 3eee62de-d5e9-42ca-9b77-7eb62e145489
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission/deny-permission:
+    post:
+      tags:
+        - default
+      summary: Deny Permission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                permissionUUID: 3eee62de-d5e9-42ca-9b77-7eb62e145489
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
