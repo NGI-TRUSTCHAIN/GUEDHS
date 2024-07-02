@@ -11,6 +11,10 @@ def server(input, output, session):
 
     @render.ui
     def main_page():
+        # client = login("localhost", "8082", "info@openmined.org", "changethis")
+        # login_status.set(True)
+        # session.client = client
+        # return dashboards_ui
         if not login_status():
             print("Rendering login UI")
             return login_ui
@@ -76,8 +80,7 @@ def server(input, output, session):
     @render.table
     @reactive.event(input.show_datasets_button, ignore_none=False)
     def datasets_table():
-        datasets = session.client.datasets.get_all()
-        return get_datasets_table(datasets)
+        return get_datasets_table(session.client)
 
     @reactive.effect
     @reactive.event(input.register_dataset)
@@ -100,6 +103,7 @@ def server(input, output, session):
         if input_validator.is_valid():
             data_path = input.data_file() or input.data_url()
             mock_path = input.mock_file() or input.mock_url() or None
+
             register_dataset(
                 session.client,
                 input.dataset_name(),
