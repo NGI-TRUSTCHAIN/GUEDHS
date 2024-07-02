@@ -1,5 +1,6 @@
 import structlog
-from structlog.processors import TimeStamper, add_log_level, KeyValueRenderer
+from structlog.processors import TimeStamper, add_log_level
+
 
 def set_static_info(_, __, event_dict):
     client = event_dict["client"]
@@ -8,6 +9,7 @@ def set_static_info(_, __, event_dict):
         event_dict["node_id"] = str(client.id)
         del event_dict["client"]
     return event_dict
+
 
 structlog.configure(
     processors=[

@@ -1,8 +1,8 @@
 import syft as sy
 import pandas as pd
 from unittest.mock import patch
-from uuid import uuid4
 from governance_ui.logs import logger
+
 
 def get_datasets_table(client):
     datasets = client.datasets.get_all()
@@ -15,7 +15,7 @@ def get_datasets_table(client):
             "id": f"{str(dataset.id)[:8]}...",
             "name": dataset.name,
             "updated at": dataset.updated_at,
-            "created at": dataset.created_at
+            "created at": dataset.created_at,
         }
         for dataset in datasets
     ]
@@ -23,25 +23,24 @@ def get_datasets_table(client):
     df = pd.DataFrame(data)
     df = df.sort_values(by="created at", ascending=False)
 
-    styled_df = df.style.hide(axis="index").set_table_styles(
-        [
-            {
-                "selector": "th",
-                "props": [
-                    ("background-color", "#e5e7eb"),
-                    ("padding", "10px 15px"),
-                ]
-            },
-            {
-                "selector": "td",
-                "props": [
-                    ("background-color", "#f3f4f6"),
-                    ("padding", "10px 15px")
-                ]
-            }
-        ]
-    ).set_table_attributes(
-        'style="border-radius: 10px; overflow: hidden;"'
+    styled_df = (
+        df.style.hide(axis="index")
+        .set_table_styles(
+            [
+                {
+                    "selector": "th",
+                    "props": [
+                        ("background-color", "#e5e7eb"),
+                        ("padding", "10px 15px"),
+                    ],
+                },
+                {
+                    "selector": "td",
+                    "props": [("background-color", "#f3f4f6"), ("padding", "10px 15px")],
+                },
+            ]
+        )
+        .set_table_attributes('style="border-radius: 10px; overflow: hidden;"')
     )
 
     logger.info("Listing datasets", client=client, action_id="list_datasets")
@@ -49,11 +48,13 @@ def get_datasets_table(client):
 
 
 def override_input(func, *args, **kwargs):
-    with patch("builtins.input", return_value="y") as mock_input:
+    with patch("builtins.input", return_value="y"):
         return func(*args, **kwargs)
 
 
-def register_dataset(client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path):
+def register_dataset(
+    client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path
+):
     main_data_subject = sy.DataSubject(
         name="Clinical",
         aliases=["clinical"],
@@ -70,9 +71,9 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
     client.data_subject_registry.add_data_subject(main_data_subject)
 
     dataset = sy.Dataset(
-        name = dataset_name,
-        description = dataset_description,
-        id = sy.UID(),
+        name=dataset_name,
+        description=dataset_description,
+        id=sy.UID(),
     )
 
     # Verify if dataset is an URL or a Path
@@ -84,8 +85,8 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
         data = pd.read_csv(data_path[0]["datapath"], low_memory=False)
 
     asset = sy.Asset(
-        name = asset_name,
-        description = asset_description,
+        name=asset_name,
+        description=asset_description,
     )
     asset.set_obj(data)
     asset.set_shape(data.shape)
@@ -109,5 +110,9 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
     # client.upload_dataset(dataset)
     override_input(client.upload_dataset, dataset)
 
-    logger.info("Dataset registered", client=client, action_id="register_dataset", dataset_id=str(dataset.id))
-
+    logger.info(
+        "Dataset registered",
+        client=client,
+        action_id="register_dataset",
+        dataset_id=str(dataset.id),
+    )
