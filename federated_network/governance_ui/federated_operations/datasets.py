@@ -1,8 +1,12 @@
 import syft as sy
 import pandas as pd
 from unittest.mock import patch
+from uuid import uuid4
+from governance_ui.logs import logger
 
-def get_datasets_table(datasets):
+def get_datasets_table(client):
+    datasets = client.datasets.get_all()
+
     if datasets is None:
         return None
 
@@ -40,6 +44,7 @@ def get_datasets_table(datasets):
         'style="border-radius: 10px; overflow: hidden;"'
     )
 
+    logger.info("Listing datasets", client=client, action_id="list_datasets")
     return styled_df
 
 
@@ -67,6 +72,7 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
     dataset = sy.Dataset(
         name = dataset_name,
         description = dataset_description,
+        id = sy.UID(),
     )
 
     # Verify if dataset is an URL or a Path
@@ -103,5 +109,5 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
     # client.upload_dataset(dataset)
     override_input(client.upload_dataset, dataset)
 
-    print(f"Dataset \"{dataset_name}\" registered successfully!")
+    logger.info("Dataset registered", client=client, action_id="register_dataset", dataset_id=str(dataset.id))
 
