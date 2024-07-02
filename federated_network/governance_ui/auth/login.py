@@ -1,5 +1,6 @@
 import syft as sy
 
+
 def login(url, port, email, password):
     try:
         client = sy.login(url=url, port=port, email=email, password=password)

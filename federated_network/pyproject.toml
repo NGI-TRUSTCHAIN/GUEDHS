@@ -19,7 +19,15 @@ shiny = "^0.10.2"
 pytest = "^8.2.2"
 shiny-validate = "^0.1.1"
 structlog = "^24.2.0"
+ruff = "^0.5.0"
+pre-commit = "^3.7.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+extend-select = ["E501"]

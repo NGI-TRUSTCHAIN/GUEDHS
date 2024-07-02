@@ -5,6 +5,7 @@ from governance_ui.auth.login import login
 from governance_ui.sections import sections
 from governance_ui.federated_operations.datasets import get_datasets_table, register_dataset
 
+
 def server(input, output, session):
     login_status = reactive.Value(False)
     current_section = reactive.Value("datasets")
@@ -47,7 +48,7 @@ def server(input, output, session):
                     section["button_id"],
                     section["button_text"],
                     class_="btn btn-primary mb-3",
-                    style="width: 200px;"
+                    style="width: 200px;",
                 )
                 for section in sections.values()
             ]
@@ -111,7 +112,7 @@ def server(input, output, session):
                 input.asset_name(),
                 input.asset_description(),
                 data_path,
-                mock_path
+                mock_path,
             )
 
             ui.notification_show("Dataset registered successfully!", duration=3)
