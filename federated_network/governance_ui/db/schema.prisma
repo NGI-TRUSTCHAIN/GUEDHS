@@ -1,0 +1,18 @@
+datasource db {
+    provider = "sqlite"
+    url      = "file:./database.db"
+}
+
+generator client {
+    provider             = "prisma-client-py"
+    interface            = "sync"
+    recursive_type_depth = 5
+}
+
+model User {
+    id         String   @id @default(uuid())
+    name       String
+    email      String   @unique
+    pysyft_pwd String
+    createdAt  DateTime @default(now())
+}

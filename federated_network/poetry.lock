@@ -3177,6 +3177,31 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
+name = "prisma"
+version = "0.13.1"
+description = "Prisma Client Python is an auto-generated and fully type-safe database client"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "prisma-0.13.1-py3-none-any.whl", hash = "sha256:b79ad69bdf09b217431904c1250c36421233ea394a230f1665f5699fd842ea20"},
+    {file = "prisma-0.13.1.tar.gz", hash = "sha256:f0f86a67c38e6f08b53cce9272dd9c736f69f4fcbb94dbdfa87bf44f983e925d"},
+]
+
+[package.dependencies]
+click = ">=7.1.2"
+httpx = ">=0.19.0"
+jinja2 = ">=2.11.2"
+nodeenv = "*"
+pydantic = ">=1.10.0,<3"
+python-dotenv = ">=0.12.0"
+tomlkit = "*"
+typing-extensions = ">=4.5.0"
+
+[package.extras]
+all = ["nodejs-bin"]
+node = ["nodejs-bin"]
+
+[[package]]
 name = "prometheus-client"
 version = "0.20.0"
 description = "Python client for the Prometheus monitoring system."
@@ -4758,6 +4783,17 @@ files = [
 ]
 
 [[package]]
+name = "tomlkit"
+version = "0.12.5"
+description = "Style preserving TOML library"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomlkit-0.12.5-py3-none-any.whl", hash = "sha256:af914f5a9c59ed9d0762c7b64d3b5d5df007448eb9cd2edc8a46b1eafead172f"},
+    {file = "tomlkit-0.12.5.tar.gz", hash = "sha256:eef34fba39834d4d6b73c9ba7f3e4d1c417a4e56f89a7e96e090dd0d24b8fb3c"},
+]
+
+[[package]]
 name = "toolz"
 version = "0.12.1"
 description = "List processing tools and functional utilities"
@@ -5475,4 +5511,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "48dc409ad17c3b33e1e17a3326617f4c8383117fafb7225c7725f008f51f1405"
+content-hash = "0b72c24d028208118eabb0635f62dd80bcce722d18cfa5c1d2e8162a46e95ac5"

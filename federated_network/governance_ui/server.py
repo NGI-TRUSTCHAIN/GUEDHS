@@ -4,6 +4,10 @@ from governance_ui.view import login_ui, dashboards_ui
 from governance_ui.auth.login import login
 from governance_ui.sections import sections
 from governance_ui.federated_operations.datasets import get_datasets_table, register_dataset
+from prisma import Prisma
+
+db = Prisma()
+db.connect()
 
 
 def server(input, output, session):
@@ -12,10 +16,6 @@ def server(input, output, session):
 
     @render.ui
     def main_page():
-        # client = login("localhost", "8082", "info@openmined.org", "changethis")
-        # login_status.set(True)
-        # session.client = client
-        # return dashboards_ui
         if not login_status():
             print("Rendering login UI")
             return login_ui
