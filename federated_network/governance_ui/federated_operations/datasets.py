@@ -7,12 +7,12 @@ from governance_ui.logs import logger
 def get_datasets_table(client):
     datasets = client.datasets.get_all()
 
-    if datasets is None:
-        return None
+    if datasets is None or len(datasets) == 0:
+        return pd.DataFrame()
 
     data = [
         {
-            "id": f"{str(dataset.id)[:8]}...",
+            "id": dataset.id,
             "name": dataset.name,
             "updated at": dataset.updated_at,
             "created at": dataset.created_at,
@@ -20,31 +20,31 @@ def get_datasets_table(client):
         for dataset in datasets
     ]
 
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data, dtype=str)
     df = df.sort_values(by="created at", ascending=False)
 
-    styled_df = (
-        df.style.hide(axis="index")
-        .set_table_styles(
-            [
-                {
-                    "selector": "th",
-                    "props": [
-                        ("background-color", "#e5e7eb"),
-                        ("padding", "10px 15px"),
-                    ],
-                },
-                {
-                    "selector": "td",
-                    "props": [("background-color", "#f3f4f6"), ("padding", "10px 15px")],
-                },
-            ]
-        )
-        .set_table_attributes('style="border-radius: 10px; overflow: hidden;"')
-    )
+    # styled_df = (
+    #     df.style.hide(axis="index")
+    #     .set_table_styles(
+    #         [
+    #             {
+    #                 "selector": "th",
+    #                 "props": [
+    #                     ("background-color", "#e5e7eb"),
+    #                     ("padding", "10px 15px"),
+    #                 ],
+    #             },
+    #             {
+    #                 "selector": "td",
+    #                 "props": [("background-color", "#f3f4f6"), ("padding", "10px 15px")],
+    #             },
+    #         ]
+    #     )
+    #     .set_table_attributes('style="border-radius: 10px; overflow: hidden;"')
+    # )
 
     logger.info("Listing datasets", client=client, action_id="list_datasets")
-    return styled_df
+    return df
 
 
 def override_input(func, *args, **kwargs):
@@ -52,9 +52,7 @@ def override_input(func, *args, **kwargs):
         return func(*args, **kwargs)
 
 
-def register_dataset(
-    client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path
-):
+def register_dataset(client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path):
     main_data_subject = sy.DataSubject(
         name="Clinical",
         aliases=["clinical"],
@@ -74,6 +72,7 @@ def register_dataset(
         name=dataset_name,
         description=dataset_description,
         id=sy.UID(),
+        # updated_at=str(pd.Timestamp.now()),
     )
 
     # Verify if dataset is an URL or a Path
@@ -116,3 +115,33 @@ def register_dataset(
         action_id="register_dataset",
         dataset_id=str(dataset.id),
     )
+
+
+def get_dataset_info(client, dataset_id):
+    # print("dataset_id", dataset_id)
+    dataset = client.datasets.get_by_id(sy.UID(dataset_id))
+
+    mock = dataset.asset_list[0].mock[:8]
+    mock_df = pd.DataFrame(mock, dtype=str)
+
+    dataset_info = {
+        "dataset_name": str(dataset.name),
+        "dataset_description": dataset.description.text,
+        "data_subject": dataset.asset_list[0].data_subjects[0].name,
+        "asset_name": dataset.asset_list[0].name,
+        # "asset_description": dataset.asset_list[0].description.text,
+        "data_shape": dataset.asset_list[0].shape,
+        "mock": dataset.asset_list[0].mock,
+        "mock_shape": dataset.asset_list[0].mock.shape,
+        "mock_is_real": dataset.asset_list[0].mock_is_real,
+        "mock_df": mock_df,
+    }
+
+    logger.info(
+        "Inspecting dataset",
+        client=client,
+        action_id="inspect_dataset",
+        dataset_id=dataset_id,
+    )
+
+    return dataset_info
