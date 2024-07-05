@@ -32,8 +32,18 @@ dashboards_ui = ui.page_sidebar(
 )
 
 datasets_ui = ui.page_fluid(
-    ui.div(ui.h1("Datasets", class_="text-center mb-5"), ui.output_ui("datasets_content")),
-    class_="container mt-5 d-flex flex-column align-items-center",
+    ui.div(
+        ui.card(
+            ui.p("Datasets", style="font-weight: bold; font-size: 30px; text-align: center; margin: 16px 0;"),
+            ui.div(
+                ui.output_ui("datasets_left"), style="height: 600px; width: 100%; overflow-y: auto; overflow-x: hidden;"
+            ),
+            height="800px",
+        ),
+        style="width: 50%",
+    ),
+    ui.div(ui.card(ui.output_ui("dataset_content"), height="800px"), style="width: 50%"),
+    class_="d-flex flex-row h-100 gap-5 px-3 align-items-center justify-content-center",
 )
 
 register_dataset_ui = ui.page_fluid(
@@ -63,9 +73,7 @@ register_dataset_ui = ui.page_fluid(
                 ),
                 class_="d-flex flex-column justify-content-center mt-5",
             ),
-            ui.input_action_button(
-                "register_dataset", "Register Dataset", class_="btn btn-primary mt-3 w-50"
-            ),
+            ui.input_action_button("register_dataset", "Register Dataset", class_="btn btn-primary mt-3 w-50"),
         ),
         class_="container mt-5 d-flex flex-column align-items-center",
     )
