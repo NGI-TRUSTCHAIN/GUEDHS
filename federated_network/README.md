@@ -10,7 +10,33 @@ First, install [Poetry](https://python-poetry.org/). Then install the project us
 poetry install
 ```
 
-## Setup
+## Setup Database
+
+Navigate to the database directory:
+
+```bash
+cd governance_ui/db
+```
+
+Apply the migrations to the database:
+
+```bash
+prisma migrate deploy
+```
+
+Generate the Prisma Client:
+
+```bash
+prisma generate
+```
+
+Populate the database:
+
+```bash
+python populate_db.py
+```
+
+## Setup Network
 
 Start the network using:
 
