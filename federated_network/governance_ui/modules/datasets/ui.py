@@ -1,9 +1,11 @@
 from shiny import module, ui
+from pathlib import Path
 
 
 @module.ui
 def datasets_ui():
     return ui.page_fluid(
+        ui.include_css(Path(__file__).parent / "../../styles.css"),
         ui.div(
             ui.card(
                 ui.h1("Datasets", class_="text-center mt-5 mb-3"),
@@ -16,7 +18,7 @@ def datasets_ui():
             class_="w-50 h-100 d-flex flex-column justify-content-center",
         ),
         ui.div(
-            ui.card(ui.output_ui("dataset_content"), height="90%"),
+            ui.card(ui.output_ui("dataset_info"), height="90%"),
             class_="w-50 h-100 d-flex flex-column justify-content-center",
         ),
         class_="d-flex flex-row h-100 gap-5 px-3",

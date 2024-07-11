@@ -1,17 +1,17 @@
-table th {
+.bigger-table th {
     background-color: #d1d5db;
     padding: 10px 24px;
     text-align: left;
 }
 
-table td {
+.bigger-table td {
     background-color: #e5e7eb;
     padding: 10px 24px;
     text-align: left;
     border-top: 1px solid #d1d5db;
 }
 
-table {
+.bigger-table {
     border-radius: 10px;
     overflow: hidden;
     width: 80%;
@@ -30,7 +30,7 @@ table {
 .smaller-table td {
     /* background-color: #e5e7eb; */
     background-color: #f3f4f6;
-    padding: 6px 10px;
+    padding: 8px 10px;
     text-align: left;
     /* border-top: 1px solid #d1d5db; */
     border-top: 1px solid #e5e7eb;
