@@ -55,6 +55,7 @@ def projects_server(input, output, session, projects_button):
                     )
                 ),
                 ui.tags.tbody(*table_rows),
+                class_="bigger-table",
             ),
             class_="d-flex flex-column w-100 h-100 align-items-center",
         )
@@ -83,7 +84,6 @@ def projects_server(input, output, session, projects_button):
                     ui.tags.td(ui.tags.div(request["requesting_user_name"], ui.tags.br(), request["requesting_user_email"])),
                     ui.tags.td(str(request["status"])),
                     ui.tags.td(inspect_button),
-                    class_="smaller-table",
                 )
             )
             if request["id"] not in registered_handlers:
@@ -147,7 +147,6 @@ def projects_server(input, output, session, projects_button):
                         ui.tags.th("Status"),
                         ui.tags.th(""),
                     ),
-                    class_="smaller-table",
                 ),
                 ui.tags.tbody(*table_rows()),
                 class_="smaller-table",
