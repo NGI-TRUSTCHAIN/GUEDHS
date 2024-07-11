@@ -8,23 +8,20 @@ def get_datasets(client):
     datasets = client.datasets.get_all()
 
     if datasets is None or len(datasets) == 0:
-        return pd.DataFrame()
+        return []
 
     data = [
         {
             "id": dataset.id,
             "name": dataset.name,
-            "updated at": dataset.updated_at,
-            "created at": dataset.created_at,
+            "created_at": dataset.created_at,
+            "updated_at": dataset.updated_at,
         }
         for dataset in datasets
     ]
 
-    df = pd.DataFrame(data, dtype=str)
-    df = df.sort_values(by="created at", ascending=False)
-
     logger.info("Listing datasets", client=client, action_id="list_datasets")
-    return df
+    return data
 
 
 def override_input(func, *args, **kwargs):
