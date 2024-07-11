@@ -1,26 +1,26 @@
 from shiny import module, render, ui, reactive
 from shiny_validate import InputValidator, check
 import pandas as pd
-from governance_ui.federated_operations.datasets import get_datasets_table, get_dataset_info, register_dataset
+from governance_ui.federated_operations.datasets import get_datasets, get_dataset_info, register_dataset
 
 
 @module.server
 def datasets_server(input, output, session, show_datasets_button):
-    datasets_data = reactive.Value(pd.DataFrame())
+    datasets = reactive.Value(pd.DataFrame())
     mock_data = reactive.Value(pd.DataFrame())
 
     @render.ui
     @reactive.event(show_datasets_button, ignore_none=False)
     def datasets_left():
-        datasets_data.set(get_datasets_table(session._parent.client))
-        if len(datasets_data()) > 0:
+        datasets.set(get_datasets(session._parent.client))
+        if len(datasets()) > 0:
             return ui.output_data_frame("datasets_df")
         else:
             return ui.h4("No datasets available.", class_="text-center")
 
     @render.data_frame
     def datasets_df():
-        return render.DataGrid(datasets_data().drop("id", axis=1), width="100%", selection_mode="row")
+        return render.DataGrid(datasets().drop("id", axis=1), width="100%", selection_mode="row")
 
     @reactive.calc
     def filtered_df():
@@ -37,7 +37,7 @@ def datasets_server(input, output, session, show_datasets_button):
                 style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;",
             )
 
-        dataset_id = datasets_data().loc[selected_dataset.index[0]].id
+        dataset_id = datasets().loc[selected_dataset.index[0]].id
         dataset_info = get_dataset_info(session._parent.client, dataset_id)
 
         mock_data.set(dataset_info["mock_df"])
