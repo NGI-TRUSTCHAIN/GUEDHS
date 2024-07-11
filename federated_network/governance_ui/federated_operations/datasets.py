@@ -4,7 +4,7 @@ from unittest.mock import patch
 from governance_ui.logs import logger
 
 
-def get_datasets_table(client):
+def get_datasets(client):
     datasets = client.datasets.get_all()
 
     if datasets is None or len(datasets) == 0:
@@ -22,26 +22,6 @@ def get_datasets_table(client):
 
     df = pd.DataFrame(data, dtype=str)
     df = df.sort_values(by="created at", ascending=False)
-
-    # styled_df = (
-    #     df.style.hide(axis="index")
-    #     .set_table_styles(
-    #         [
-    #             {
-    #                 "selector": "th",
-    #                 "props": [
-    #                     ("background-color", "#e5e7eb"),
-    #                     ("padding", "10px 15px"),
-    #                 ],
-    #             },
-    #             {
-    #                 "selector": "td",
-    #                 "props": [("background-color", "#f3f4f6"), ("padding", "10px 15px")],
-    #             },
-    #         ]
-    #     )
-    #     .set_table_attributes('style="border-radius: 10px; overflow: hidden;"')
-    # )
 
     logger.info("Listing datasets", client=client, action_id="list_datasets")
     return df
@@ -118,7 +98,6 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
 
 
 def get_dataset_info(client, dataset_id):
-    # print("dataset_id", dataset_id)
     dataset = client.datasets.get_by_id(sy.UID(dataset_id))
 
     mock = dataset.asset_list[0].mock[:8]

@@ -6,17 +6,20 @@ def datasets_ui():
     return ui.page_fluid(
         ui.div(
             ui.card(
-                ui.p("Datasets", style="font-weight: bold; font-size: 30px; text-align: center; margin: 16px 0;"),
+                ui.h1("Datasets", class_="text-center mt-5 mb-3"),
                 ui.div(
                     ui.output_ui("datasets_left"),
                     style="height: 600px; width: 100%; overflow-y: auto; overflow-x: hidden;",
                 ),
-                height="800px",
+                height="90%",
             ),
-            style="width: 50%",
+            class_="w-50 h-100 d-flex flex-column justify-content-center",
         ),
-        ui.div(ui.card(ui.output_ui("dataset_content"), height="800px"), style="width: 50%"),
-        class_="d-flex flex-row h-100 gap-5 px-3 align-items-center justify-content-center",
+        ui.div(
+            ui.card(ui.output_ui("dataset_content"), height="90%"),
+            class_="w-50 h-100 d-flex flex-column justify-content-center",
+        ),
+        class_="d-flex flex-row h-100 gap-5 px-3",
     )
 
 
@@ -24,7 +27,7 @@ def datasets_ui():
 def register_dataset_ui():
     return ui.page_fluid(
         ui.div(
-            ui.h1("Register Dataset", class_="text-center mb-5"),
+            ui.h1("Register Dataset", class_="text-center my-5"),
             ui.div(
                 ui.div(
                     ui.h4("Dataset Info:"),
@@ -51,6 +54,6 @@ def register_dataset_ui():
                 ),
                 ui.input_action_button("register_dataset", "Register Dataset", class_="btn btn-primary mt-3 w-50"),
             ),
-            class_="container mt-5 d-flex flex-column align-items-center",
+            class_="d-flex flex-column w-100 h-100 align-items-center",
         )
     )
