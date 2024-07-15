@@ -1,8 +1,10 @@
 # MacOS
-.DS_Store
+.DS_Store*
 
 # Node.js and .env files
 node_modules
+package-lock.json
+swagger-output.json
 .env
 
 # Hardhat files
