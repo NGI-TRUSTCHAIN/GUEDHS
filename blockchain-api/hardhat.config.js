@@ -3,39 +3,14 @@ require("@nomicfoundation/hardhat-verify")
 require("@nomicfoundation/hardhat-chai-matchers")
 require("dotenv").config();
 
-const LOCAL_DEV_URL = process.env.LOCAL_DEV_URL;
-const API_URL = process.env.API_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+const JSON_RPC_URL = process.env.JSON_RPC_URL;
 
 module.exports = {
   solidity: "0.8.24", // Adjust the version according to your contract's pragma version
   defaultNetwork: "localhost",
   networks: {
     localhost: {
-      url: LOCAL_DEV_URL
-    },
-    polygonAmoy: {
-      allowUnlimitedContractSize: true,
-      url: API_URL,
-      accounts: [`0x${PRIVATE_KEY}`]
+      url: JSON_RPC_URL
     }
-  },
-  etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
-    customChains: [
-      {
-        network: "polygonAmoy",
-        chainId: 80002,
-        urls: {
-          apiURL:
-            "https://api-amoy.polygonscan.com/api",
-          browserURL: "https://amoy.polygonscan.com/",
-        },
-      },
-    ],
-  },
-  sourcify: {
-    enabled: true
   }
 };

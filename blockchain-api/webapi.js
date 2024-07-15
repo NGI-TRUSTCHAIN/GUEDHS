@@ -6,7 +6,11 @@ var logger = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 
-const permissionRouter = require('./routes/permission');
+const accessRouter = require('./routes/access');
+const userRouter = require('./routes/user');
+const dataOpRuleRouter = require('./routes/data-op-rule');
+const datasetRouter = require('./routes/datasets');
+const auditRouter = require('./routes/audit');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -22,7 +26,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-app.use('/permission', permissionRouter);
+app.use('/access-request', accessRouter);
+app.use('/user-management', userRouter);
+app.use('/data-op-rule', dataOpRuleRouter);
+app.use('/datasets', datasetRouter);
+app.use('/audit-logs', auditRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

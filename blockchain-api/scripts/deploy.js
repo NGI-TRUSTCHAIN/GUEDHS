@@ -1,8 +1,8 @@
 require('dotenv').config({ path: '../blockchain-api/.env' });
+const fs = require('fs');
+const path = require('path');
 
 async function main() {
-    // Compile the contract if not already compiled
-    //await hre.run('compile');
     const [deployer] = await ethers.getSigners();
 
     const GUEDHS = await ethers.getContractFactory("GUEDHS");
@@ -11,11 +11,12 @@ async function main() {
     
     await guedhs.deployed();
 
-    console.log("GUEDHS deployed to:", guedhs.address);
+    const logPath = path.resolve(__dirname, '../deploy.log');
+    fs.writeFileSync(logPath, `GUEDHS deployed to: ${guedhs.address}\n`);
+
+    console.log("GUEDHS contract deployed to:", guedhs.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main()
     .then(() => process.exit(0))
     .catch((error) => {
