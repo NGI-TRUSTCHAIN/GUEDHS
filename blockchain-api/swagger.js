@@ -11,6 +11,24 @@ const doc = {
             url: 'http://localhost:3000'
         }
     ],
+    tags: [
+        {
+            "name": "Code Request Review",
+            "description": "Endpoints"
+        },
+        {
+            "name": "Node User Management",
+            "description": "Endpoints"
+        },
+        {
+            "name": "Data Operation Rule",
+            "description": "Endpoints"
+        },
+        {
+            "name": "Datasets",
+            "description": "Endpoints"
+        }
+    ],
     components: {
         schemas: {
             someBody: {
