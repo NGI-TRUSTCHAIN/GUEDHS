@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  blockchain-node:
+    build:
+      context: .
+      dockerfile: Dockerfile.hardhat
+    ports:
+      - "8545:8545"
+    volumes:
+      - .:/usr/src/app

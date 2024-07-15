@@ -1,3 +1,6 @@
+# MacOS
+.DS_Store
+
 # Node.js and .env files
 node_modules
 .env
