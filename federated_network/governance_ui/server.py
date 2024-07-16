@@ -3,6 +3,7 @@ from governance_ui.sections import sections
 from governance_ui.modules.auth import auth_ui, auth_server
 from governance_ui.modules.datasets import datasets_server
 from governance_ui.modules.projects import projects_server
+from governance_ui.icons import logout_icon
 
 dashboards_ui = ui.page_sidebar(
     ui.sidebar(
@@ -37,15 +38,28 @@ def server(input, output, session):
                 [
                     ui.input_action_button(
                         section["button_id"],
-                        section["button_text"],
+                        ui.div(
+                            ui.span(section["icon"], style="margin-right: 12px;"),
+                            ui.span(section["button_text"]),
+                            class_="d-flex justify-content-start align-items-center",
+                        ),
                         class_="btn btn-primary mb-3",
-                        style="width: 200px;",
+                        style="width: 220px;",
                     )
                     for section in sections.values()
                 ]
             ),
             ui.div(
-                ui.input_action_button("logout_button", "Logout", class_="btn btn-secondary", style="width: 200px;"),
+                ui.input_action_button(
+                    "logout_button",
+                    ui.div(
+                        ui.span(logout_icon, style="margin-right: 12px;"),
+                        ui.span("Logout"),
+                        class_="d-flex justify-content-start align-items-center",
+                    ),
+                    class_="btn btn-secondary",
+                    style="width: 200px;",
+                ),
                 ui.tags.script(
                     """
                     $(function() {
