@@ -1,13 +1,8 @@
 from shiny import reactive, render, ui
-from prisma import Prisma
 from governance_ui.sections import sections
-from governance_ui.modules.auth import login_ui, login_server
+from governance_ui.modules.auth import auth_ui, auth_server
 from governance_ui.modules.datasets import datasets_server
 from governance_ui.modules.projects import projects_server
-# from governance_ui.auth.login import login
-
-db = Prisma()
-db.connect()
 
 dashboards_ui = ui.page_sidebar(
     ui.sidebar(
@@ -21,36 +16,52 @@ dashboards_ui = ui.page_sidebar(
 
 
 def server(input, output, session):
-    login_status = reactive.Value(False)
     current_section = reactive.Value("datasets")
+    client = reactive.Value(None)
 
     @render.ui
+    @reactive.event(client, ignore_none=False)
     def main_page():
-        # client = login("localhost", "8081", "info@openmined.org", "changethis")
-        # login_status.set(True)
-        # session.client = client
-        # return dashboards_ui
-        if not login_status():
-            print("Rendering login UI")
-            return login_ui("login")
-        else:
-            print("Rendering dashboard UI")
+        if client():
+            session.client = client()
             return dashboards_ui
+        else:
+            return auth_ui("login")
 
-    login_server("login", login_status=login_status)
+    auth_server("login", client=client)
 
     @render.ui
     def sidebar_buttons():
         return ui.div(
-            [
-                ui.input_action_button(
-                    section["button_id"],
-                    section["button_text"],
-                    class_="btn btn-primary mb-3",
-                    style="width: 200px;",
-                )
-                for section in sections.values()
-            ]
+            ui.div(
+                [
+                    ui.input_action_button(
+                        section["button_id"],
+                        section["button_text"],
+                        class_="btn btn-primary mb-3",
+                        style="width: 200px;",
+                    )
+                    for section in sections.values()
+                ]
+            ),
+            ui.div(
+                ui.input_action_button("logout_button", "Logout", class_="btn btn-secondary", style="width: 200px;"),
+                ui.tags.script(
+                    """
+                    $(function() {
+                        Shiny.addCustomMessageHandler("logout", function(message) {
+                            window.location.replace("http://localhost:9011/oauth2/logout?client_id=228a7299-ae57-4fab-b5dd-c595ba5709df");
+                        });
+                    });
+                    """
+                ),
+                style="margin-bottom: 8px;",
+            ),
+            style="display: flex;\
+                   flex-direction: column;\
+                   height: 100%;\
+                   align-items: center;\
+                   justify-content: space-between;",
         )
 
     def handle_section(section):
@@ -67,6 +78,12 @@ def server(input, output, session):
     @render.ui
     def content_ui():
         return sections[current_section()]["ui"]
+
+    @reactive.effect
+    @reactive.event(input.logout_button)
+    async def logout_button_handler():
+        print("Logging out")
+        await session.send_custom_message("logout", None)
 
     datasets_server("datasets", show_datasets_button=input.show_datasets_button)
 

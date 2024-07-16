@@ -28,7 +28,9 @@ def projects_server(input, output, session, projects_button):
     def projects_table():
         table_rows = []
         for project in projects():
-            inspect_button = ui.input_action_button(f"inspect_project_{project['id']}", "Inspect", class_="btn btn-primary btn-sm")
+            inspect_button = ui.input_action_button(
+                f"inspect_project_{project['id']}", "Inspect", class_="btn btn-primary btn-sm"
+            )
             table_rows.append(
                 ui.tags.tr(
                     ui.tags.td(project["name"]),
@@ -76,12 +78,20 @@ def projects_server(input, output, session, projects_button):
         for request in requests:
             request_time = request["request_time"].utc_timestamp
             formatted_date = datetime.utcfromtimestamp(request_time).strftime("%Y-%m-%d %H:%M")
-            inspect_button = ui.input_action_button(f"inspect_request_{request['id']}", "Inspect", class_="btn btn-primary btn-sm")
+            inspect_button = ui.input_action_button(
+                f"inspect_request_{request['id']}", "Inspect", class_="btn btn-primary btn-sm"
+            )
             rows.append(
                 ui.tags.tr(
                     ui.tags.td(request["description"]),
                     ui.tags.td(str(formatted_date)),
-                    ui.tags.td(ui.tags.div(request["requesting_user_name"], ui.tags.br(), request["requesting_user_email"])),
+                    ui.tags.td(
+                        ui.tags.div(
+                            request["requesting_user_name"],
+                            ui.tags.br(),
+                            request["requesting_user_email"],
+                        )
+                    ),
                     ui.tags.td(str(request["status"])),
                     ui.tags.td(inspect_button),
                 )
@@ -98,7 +108,13 @@ def projects_server(input, output, session, projects_button):
                     ui.input_action_button(
                         "back_button",
                         ui.output_image("back_button_image"),
-                        style="position: absolute; z-index: 1; width: 40px; height: 40px; background: none; border: none; padding: 0;",
+                        style="position: absolute;\
+                               z-index: 1;\
+                               width: 40px;\
+                               height: 40px;\
+                               background: none;\
+                               border: none;\
+                               padding: 0;",
                     ),
                     ui.h3(project["project_name"], class_="text-center mt-5 mb-3"),
                     ui.div(
@@ -111,10 +127,17 @@ def projects_server(input, output, session, projects_button):
                             ui.div(
                                 ui.p("Created by:", style="font-weight: bold; margin: 0 8px 0 0;"),
                                 ui.p(project["created_by"]),
-                                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                                style="font-size: 16px;\
+                                       display: flex;\
+                                       flex-direction: row;\
+                                       flex-wrap: wrap;\
+                                       margin-bottom: 8px;",
                             ),
                         ),
-                        ui.p("Requests:", style="font-weight: bold; font-size: 18px; margin: 32px 0 12px 0;"),
+                        ui.p(
+                            "Requests:",
+                            style="font-weight: bold; font-size: 18px; margin: 32px 0 12px 0;",
+                        ),
                         ui.output_ui("requests_table"),
                         class_="w-100",
                     ),
@@ -135,7 +158,10 @@ def projects_server(input, output, session, projects_button):
     @render.ui
     def requests_table():
         if table_rows() == []:
-            return ui.p("No requests available", style="font-size: 22px; margin: 18px 0; text-align: center;")
+            return ui.p(
+                "No requests available",
+                style="font-size: 22px; margin: 18px 0; text-align: center;",
+            )
 
         return (
             ui.tags.table(
