@@ -86,55 +86,55 @@ def datasets_server(input, output, session, show_datasets_button):
         return ui.div(
             ui.p("Dataset info:", style="font-weight: bold; font-size: 20px; margin: 16px 0 8px;"),
             ui.div(
-                ui.p("Dataset name:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Dataset name:", class_="info-title"),
                 ui.p(dataset_info["dataset_name"]),
-                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                class_="info-container",
             ),
             ui.div(
-                ui.p("Dataset description:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Dataset description:", class_="info-title"),
                 ui.p(dataset_info["dataset_description"]),
                 style="font-size: 16px; display: flex; flex-wrap: wrap;",
             ),
             ui.p("Asset info:", style="font-weight: bold; font-size: 20px; margin: 24px 0 8px;"),
             ui.div(
-                ui.p("Asset name:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Asset name:", class_="info-title"),
                 ui.p(dataset_info["asset_name"]),
-                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                class_="info-container",
             ),
             # ui.div(
-            #     ui.p("Description:", style="font-weight: bold; margin: 0 8px 0 0;"),
+            #     ui.p("Description:", class_="info-title"),
             #     ui.p(dataset_info["asset_description"]),
-            #     style="font-size: 16px; display: flex; flex-wrap: wrap; margin-bottom: 8px"
+            #     style="font-size: 16px; display: flex; flex-wrap: wrap;"
             # ),
             ui.div(
-                ui.p("Data subject:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Data subject:", class_="info-title"),
                 ui.p(dataset_info["data_subject"]),
-                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                class_="info-container",
             ),
             ui.div(
-                ui.p("Data shape:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Data shape:", class_="info-title"),
                 ui.p(
                     dataset_info["data_shape"][0],
                     " rows x ",
                     dataset_info["data_shape"][1],
                     " columns",
                 ),
-                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                class_="info-container",
             ),
             ui.div(
-                ui.p("Mock shape:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Mock shape:", class_="info-title"),
                 ui.p(
                     dataset_info["mock_shape"][0],
                     " rows x ",
                     dataset_info["mock_shape"][1],
                     " columns",
                 ),
-                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                class_="info-container",
             ),
             ui.div(
-                ui.p("Mock is real:", style="font-weight: bold; margin: 0 8px 0 0;"),
+                ui.p("Mock is real:", class_="info-title"),
                 ui.p(dataset_info["mock_is_real"]),
-                style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
+                class_="info-container",
             ),
             ui.p("Mock preview:", style="font-weight: bold; font-size: 16px; margin-bottom: 8px;"),
             ui.output_data_frame("mock_df"),

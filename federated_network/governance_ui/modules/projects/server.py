@@ -1,8 +1,7 @@
 from shiny import module, render, ui, reactive
-from shiny.types import ImgData
 from datetime import datetime
-from pathlib import Path
 from governance_ui.federated_operations.projects import get_projects, get_project_info
+from governance_ui.icons import arrow_left
 
 
 @module.server
@@ -107,14 +106,9 @@ def projects_server(input, output, session, projects_button):
                 ui.card(
                     ui.input_action_button(
                         "back_button",
-                        ui.output_image("back_button_image"),
-                        style="position: absolute;\
-                               z-index: 1;\
-                               width: 40px;\
-                               height: 40px;\
-                               background: none;\
-                               border: none;\
-                               padding: 0;",
+                        arrow_left,
+                        style="position: absolute; z-index: 1; padding: 0;",
+                        class_="custom-button",
                     ),
                     ui.h3(project["project_name"], class_="text-center mt-5 mb-3"),
                     ui.div(
@@ -184,12 +178,6 @@ def projects_server(input, output, session, projects_button):
     def back_button_handler():
         current_project_id.set(None)
         current_request_id.set(None)
-
-    @render.image
-    def back_button_image():
-        dir = Path(__file__).parent
-        img: ImgData = {"src": str(dir / "back-arrow.svg"), "width": "40px"}
-        return img
 
     def handle_inspect_request(request_id):
         @reactive.effect
