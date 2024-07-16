@@ -1,7 +1,11 @@
 from shiny import module, render, ui, reactive
 from shiny_validate import InputValidator, check
 import pandas as pd
-from governance_ui.federated_operations.datasets import get_datasets, get_dataset_info, register_dataset
+from governance_ui.federated_operations.datasets import (
+    get_datasets,
+    get_dataset_info,
+    register_dataset,
+)
 
 
 @module.server
@@ -25,7 +29,9 @@ def datasets_server(input, output, session, show_datasets_button):
     def datasets_table():
         table_rows = []
         for dataset in datasets():
-            inspect_button = ui.input_action_button(f"inspect_dataset_{dataset['id']}", "Inspect", class_="btn btn-primary btn-sm")
+            inspect_button = ui.input_action_button(
+                f"inspect_dataset_{dataset['id']}", "Inspect", class_="btn btn-primary btn-sm"
+            )
             table_rows.append(
                 ui.tags.tr(
                     ui.tags.td(dataset["name"]),
@@ -35,7 +41,6 @@ def datasets_server(input, output, session, show_datasets_button):
                 )
             )
             if dataset["id"] not in registered_handlers:
-                print(f"Registering handler for dataset {dataset['id']}")
                 handle_inspect_dataset(dataset["id"])
                 registered_handlers.add(dataset["id"])
 
@@ -59,17 +64,19 @@ def datasets_server(input, output, session, show_datasets_button):
         @reactive.effect
         @reactive.event(input[f"inspect_dataset_{dataset_id}"])
         def inspect_dataset():
-            print(f"Inspecting dataset {dataset_id}")
             current_dataset_id.set(dataset_id)
 
     @render.ui
     @reactive.event(show_datasets_button, current_dataset_id, ignore_none=False)
-    # @reactive.event(current_dataset_id)
     def dataset_info():
         if current_dataset_id() is None:
             return ui.div(
                 ui.h4("Select a dataset for more details", class_="text-center"),
-                style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;",
+                style="width: 100%;\
+                       height: 100%;\
+                       display: flex;\
+                       justify-content: center;\
+                       align-items: center;",
             )
 
         dataset_info = get_dataset_info(session._parent.client, current_dataset_id())
@@ -106,12 +113,22 @@ def datasets_server(input, output, session, show_datasets_button):
             ),
             ui.div(
                 ui.p("Data shape:", style="font-weight: bold; margin: 0 8px 0 0;"),
-                ui.p(dataset_info["data_shape"][0], " rows x ", dataset_info["data_shape"][1], " columns"),
+                ui.p(
+                    dataset_info["data_shape"][0],
+                    " rows x ",
+                    dataset_info["data_shape"][1],
+                    " columns",
+                ),
                 style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
             ),
             ui.div(
                 ui.p("Mock shape:", style="font-weight: bold; margin: 0 8px 0 0;"),
-                ui.p(dataset_info["mock_shape"][0], " rows x ", dataset_info["mock_shape"][1], " columns"),
+                ui.p(
+                    dataset_info["mock_shape"][0],
+                    " rows x ",
+                    dataset_info["mock_shape"][1],
+                    " columns",
+                ),
                 style="font-size: 16px; display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 8px;",
             ),
             ui.div(
