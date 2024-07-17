@@ -1,6 +1,29 @@
 version: '3'
 
 services:
+  guehds:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./governance_ui/db/database.db:/app/governance_ui/db/database.db
+    env_file:
+      - .env
+
+  caddy:
+    container_name: caddy
+    image: caddy:alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
   db:
     image: postgres:16.0-bookworm
     environment:
@@ -89,3 +112,5 @@ volumes:
   db_data:
   fusionauth_config:
   search_data:
+  caddy_data:
+  caddy_config:
