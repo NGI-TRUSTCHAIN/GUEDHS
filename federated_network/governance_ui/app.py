@@ -1,24 +1,25 @@
 from shiny import App, ui
 from governance_ui.server import server
 from authlib.integrations.starlette_client import OAuth
-from starlette.config import Config
 from starlette.applications import Starlette
 from starlette.routing import Route, Mount
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import RedirectResponse
+from governance_ui.config import config
 
-config = Config(".env")
-oauth = OAuth(config)
 
+oauth = OAuth()
 oauth.register(
     name="fusionauth",
-    authorize_url="http://localhost:9011/oauth2/authorize",
+    client_id=config.fusionauth_client_id,
+    client_secret=config.fusionauth_client_secret,
+    authorize_url=f"http://{config.oauth_provider_auth_url}/oauth2/authorize",
     authorize_params=None,
-    access_token_url="http://localhost:9011/oauth2/token",
+    access_token_url=f"http://{config.oauth_provider_auth_url}/oauth2/token",
     access_token_params=None,
     refresh_token_url=None,
     authorize_state="secret-key",
-    server_metadata_url="http://localhost:9011/.well-known/openid-configuration",
+    server_metadata_url=f"http://{config.oauth_provider_auth_url}/.well-known/openid-configuration",
     client_kwargs={
         "scope": "openid email profile offline_access",
     },
