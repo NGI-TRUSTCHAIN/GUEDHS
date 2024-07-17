@@ -1,11 +1,13 @@
 # Import a large image that has all we need for building the app included
 FROM python:3.11 AS builder
 
+WORKDIR /app
+
 # Install poetry
 RUN curl -sSL https://install.python-poetry.org | python -
 
 # Ccopy the dependency files
-COPY poetry.lock pyproject.toml /
+COPY poetry.lock pyproject.toml ./
 
 # Tell poetry to use a local venv
 RUN $HOME/.local/bin/poetry config virtualenvs.in-project true
@@ -19,14 +21,14 @@ FROM python:3.11 AS runner
 WORKDIR /app
 
 # Copy the dependencies we got in the large image
-COPY --from=builder /.venv /app/.venv
+COPY --from=builder /app/.venv /app/.venv
 # Activate the venv
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy our code
 COPY ./governance_ui ./governance_ui
 
-RUN . /app/.venv/bin/activate && cd governance_ui/db && prisma generate
+RUN prisma generate --schema=./governance_ui/db/schema.prisma
 
 # Tell docker to run shiny when the image boots
-CMD python -m uvicorn governance_ui.app:app
+CMD uvicorn governance_ui.app:app
