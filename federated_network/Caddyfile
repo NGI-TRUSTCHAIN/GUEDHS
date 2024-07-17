@@ -1,0 +1,14 @@
+guehds.local.promptly.health {
+	reverse_proxy host.docker.internal:8000
+    tls internal
+}
+
+auth.local.promptly.health {
+    reverse_proxy host.docker.internal:9011
+    tls internal
+}
+
+syft.local.promptly.health {
+    reverse_proxy host.docker.internal:8081
+    tls internal
+}

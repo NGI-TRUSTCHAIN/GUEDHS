@@ -10,7 +10,7 @@ def auth_ui():
             f"""
                 $(function() {{
                     Shiny.addCustomMessageHandler("login", function(message) {{
-                        window.location.replace("http://{config.oauth_provider_app_url}/login");
+                        window.location.replace("{config.oauth_provider_app_url}/login");
                     }});
                 }});
             """
@@ -19,7 +19,7 @@ def auth_ui():
             f"""
                 $(function() {{
                     Shiny.addCustomMessageHandler("logout", function(message) {{
-                        window.location.replace("http://{config.oauth_provider_auth_url}/oauth2/logout?client_id={config.fusionauth_client_id}");
+                        window.location.replace("{config.oauth_provider_auth_url}/oauth2/logout?client_id={config.fusionauth_client_id}");
                     }});
                 }});
             """
