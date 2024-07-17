@@ -1,6 +1,7 @@
 from shiny import module, reactive
 from governance_ui.auth.login import login
 from prisma import Prisma
+from governance_ui.config import config
 
 db = Prisma()
 db.connect()
@@ -15,7 +16,7 @@ def auth_server(input, output, session, client):
             user = session._parent.http_conn.session.get("user")
             if user:
                 db_user = db.user.find_unique(where={"email": user.get("email")})
-                r_client = login("localhost", "8081", db_user.email, db_user.pysyft_pwd)
+                r_client = login(config.pysyft_url, config.pysyft_port, db_user.email, db_user.pysyft_pwd)
                 client.set(r_client)
             else:
                 print("Redirecting to login")

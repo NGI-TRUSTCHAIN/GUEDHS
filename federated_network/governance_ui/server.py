@@ -60,15 +60,6 @@ def server(input, output, session):
                     class_="btn btn-secondary",
                     style="width: 200px;",
                 ),
-                ui.tags.script(
-                    """
-                    $(function() {
-                        Shiny.addCustomMessageHandler("logout", function(message) {
-                            window.location.replace("http://localhost:9011/oauth2/logout?client_id=228a7299-ae57-4fab-b5dd-c595ba5709df");
-                        });
-                    });
-                    """
-                ),
                 style="margin-bottom: 8px;",
             ),
             style="display: flex;\
