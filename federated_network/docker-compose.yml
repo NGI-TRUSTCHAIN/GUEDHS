@@ -11,6 +11,9 @@ services:
       - ./governance_ui/db/database.db:/app/governance_ui/db/database.db
     env_file:
       - .env
+    extra_hosts:
+      - "auth.local.promptly.health:host-gateway"
+      - "syft.local.promptly.health:host-gateway"
 
   caddy:
     container_name: caddy

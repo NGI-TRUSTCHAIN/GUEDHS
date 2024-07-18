@@ -1,14 +1,17 @@
-guehds.local.promptly.health {
+{
+	auto_https off
+}
+
+guehds.local.promptly.health:80 {
 	reverse_proxy host.docker.internal:8000
-    tls internal
 }
 
-auth.local.promptly.health {
-    reverse_proxy host.docker.internal:9011
-    tls internal
+auth.local.promptly.health:80 {
+    reverse_proxy host.docker.internal:9011 {
+        header_up X-Forwarded-Port 80
+    }
 }
 
-syft.local.promptly.health {
+syft.local.promptly.health:80 {
     reverse_proxy host.docker.internal:8081
-    tls internal
 }
