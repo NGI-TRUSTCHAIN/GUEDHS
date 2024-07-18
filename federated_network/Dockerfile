@@ -25,10 +25,12 @@ COPY --from=builder /app/.venv /app/.venv
 # Activate the venv
 ENV PATH="/app/.venv/bin:$PATH"
 
+# Generate the prisma client
+COPY ./governance_ui/db/schema.prisma ./governance_ui/db/schema.prisma
+RUN prisma generate --schema=./governance_ui/db/schema.prisma
+
 # Copy our code
 COPY ./governance_ui ./governance_ui
 
-RUN prisma generate --schema=./governance_ui/db/schema.prisma
-
 # Tell docker to run shiny when the image boots
-CMD uvicorn governance_ui.app:app
+CMD uvicorn governance_ui.app:app --host 0.0.0.0
