@@ -1,6 +1,21 @@
+.info-title {
+    margin: 0 8px 0 0;
+    font-weight: bold;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+
+/* Custom Button */
+
 .custom-button {
     background: none;
-    /* background-color: none; */
     border: none;
     color: #000;
 }
@@ -13,22 +28,6 @@
     color: #000 !important;
     outline: none !important;
     box-shadow: none !important;
-}
-
-
-/* Card Info */
-
-.info-title {
-    margin: 0 8px 0 0;
-    font-weight: bold;
-}
-
-.info-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-    font-size: 16px;
 }
 
 
@@ -56,7 +55,6 @@
 }
 
 .smaller-table th {
-    /* background-color: #d1d5db; */
     background-color: #e5e7eb;
     padding: 6px 10px;
     text-align: left;
@@ -64,11 +62,9 @@
 }
 
 .smaller-table td {
-    /* background-color: #e5e7eb; */
     background-color: #f3f4f6;
     padding: 8px 10px;
     text-align: left;
-    /* border-top: 1px solid #d1d5db; */
     border-top: 1px solid #e5e7eb;
 }
 
