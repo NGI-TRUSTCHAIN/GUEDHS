@@ -13,7 +13,7 @@ const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const JSON_RPC_URL = process.env.JSON_RPC_URL;
 const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL);
 const signer = provider.getSigner();
-const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, provider);
 
 function filterLogs(logActions, dataCustodianId, nodeId) {
     if (!dataCustodianId || !nodeId) {
