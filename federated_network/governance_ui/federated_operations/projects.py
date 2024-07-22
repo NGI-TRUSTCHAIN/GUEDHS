@@ -86,6 +86,16 @@ def get_request_info(client, project_id, request_index):
         "dataset_info": dataset_info,
     }
 
+    logger.info(
+        "Inspect access request",
+        client=client,
+        action_id="inspect_access_request",
+        user_id=request.requesting_user_email,
+        dataset_id=str(request_info["dataset_info"]["asset_id"]),
+        status=request.status.name,
+        request_access_id=str(request.id),
+    )
+
     return request_info
 
 
@@ -125,6 +135,16 @@ def approve_request(client, project_id, request_index, real_result):
     # request.accept_by_depositing_result(real_result, force=True)
     override_input(request.accept_by_depositing_result, real_result, force=True)
 
+    logger.info(
+        "Accept access request",
+        client=client,
+        action_id="accept_access_request",
+        user_id=request.requesting_user_email,
+        dataset_id=str(request.code.assets[0].id),
+        status=request.status.name,
+        request_access_id=str(request.id),
+    )
+
 
 def reject_request(client, project_id, request_index, reason):
     project = client.projects.get_by_uid(project_id)
@@ -132,3 +152,13 @@ def reject_request(client, project_id, request_index, reason):
 
     # request.deny(reason=reason)
     override_input(request.deny, reason=reason)
+
+    logger.info(
+        "Reject access request",
+        client=client,
+        action_id="reject_access_request",
+        user_id=request.requesting_user_email,
+        dataset_id=str(request.code.assets[0].id),
+        status=request.status.name,
+        request_access_id=request.id,
+    )
