@@ -2,6 +2,7 @@ import syft as sy
 import pandas as pd
 from unittest.mock import patch
 from governance_ui.logs import logger
+from datetime import datetime
 
 
 def get_datasets(client):
@@ -29,7 +30,9 @@ def override_input(func, *args, **kwargs):
         return func(*args, **kwargs)
 
 
-def register_dataset(client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path):
+def register_dataset(
+    client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path, mock_is_real
+):
     main_data_subject = sy.DataSubject(
         name="Clinical",
         aliases=["clinical"],
@@ -49,7 +52,7 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
         name=dataset_name,
         description=dataset_description,
         id=sy.UID(),
-        # updated_at=str(pd.Timestamp.now()),
+        updated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     )
 
     # Verify if dataset is an URL or a Path
@@ -76,7 +79,7 @@ def register_dataset(client, dataset_name, dataset_description, asset_name, asse
         else:
             print("Reading mock from file...")
             mock = pd.read_csv(mock_path[0]["datapath"], low_memory=False)
-        asset.set_mock(mock, mock_is_real=False)
+        asset.set_mock(mock, mock_is_real=mock_is_real)
     else:
         print("Creating mock...")
         mock = data.sample(frac=0.1)

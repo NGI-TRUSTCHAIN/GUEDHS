@@ -28,34 +28,39 @@ def datasets_ui():
 @module.ui
 def register_dataset_ui():
     return ui.page_fluid(
+        ui.h1("Register Dataset", class_="text-center my-5"),
         ui.div(
-            ui.h1("Register Dataset", class_="text-center my-5"),
             ui.div(
-                ui.div(
-                    ui.h4("Dataset Info:"),
-                    ui.input_text("dataset_name", "Name"),
-                    ui.input_text("dataset_description", "Description"),
-                ),
-                ui.div(
-                    ui.h4("Asset Info:"),
-                    ui.input_text("asset_name", "Name"),
-                    ui.input_text("asset_description", "Description"),
-                    ui.div(
-                        ui.input_text("data_url", "Dataset URL"),
-                        ui.p("or", class_="mt-4"),
-                        ui.input_file("data_file", "Dataset File"),
-                        class_="d-flex flex-row gap-5",
-                    ),
-                    ui.div(
-                        ui.input_text("mock_url", "Mock URL (Optional)"),
-                        ui.p("or", class_="mt-4"),
-                        ui.input_file("mock_file", "Mock File (Optional)"),
-                        class_="d-flex flex-row gap-5",
-                    ),
-                    class_="d-flex flex-column justify-content-center mt-5",
-                ),
-                ui.input_action_button("register_dataset", "Register Dataset", class_="btn btn-primary mt-3 w-50"),
+                ui.h4("Dataset Info:"),
+                ui.input_text("dataset_name", "* Name"),
+                ui.input_text("dataset_description", "Description"),
             ),
-            class_="d-flex flex-column w-100 h-100 align-items-center",
-        )
+            ui.div(
+                ui.h4("Asset Info:"),
+                ui.input_text("asset_name", "* Name"),
+                ui.input_text("asset_description", "Description"),
+                ui.div(
+                    ui.input_text("data_url", "* Dataset URL"),
+                    ui.p("or", class_="mt-4"),
+                    ui.input_file("data_file", "* Dataset File"),
+                    class_="d-flex flex-row gap-5",
+                ),
+                ui.div(
+                    ui.input_text("mock_url", "Mock URL"),
+                    ui.p("or", class_="mt-4"),
+                    ui.input_file("mock_file", "Mock File"),
+                    class_="d-flex flex-row gap-5",
+                ),
+                ui.input_checkbox("mock_is_real", "Mock is real"),
+            ),
+            class_="d-flex flex-row mt-5 mb-3 gap-5 justify-content-center",
+        ),
+        ui.div(
+            ui.div(
+                ui.input_action_button("register_dataset", "Register Dataset", class_="btn btn-primary w-100"),
+                style="width: 240px;",
+            ),
+            class_="d-flex mt-5 justify-content-center align-items-center",
+        ),
+        class_="d-flex flex-column w-100 h-100",
     )
