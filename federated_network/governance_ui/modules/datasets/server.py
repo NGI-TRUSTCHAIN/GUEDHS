@@ -92,7 +92,7 @@ def datasets_server(input, output, session, show_datasets_button):
             ),
             ui.div(
                 ui.p("Dataset description:", class_="info-title"),
-                ui.p(dataset_info["dataset_description"]),
+                ui.p(f"{dataset_info['dataset_description'] or 'No description'}"),
                 style="font-size: 16px; display: flex; flex-wrap: wrap;",
             ),
             ui.p("Asset info:", style="font-weight: bold; font-size: 20px; margin: 24px 0 8px;"),
@@ -175,6 +175,7 @@ def datasets_server(input, output, session, show_datasets_button):
                 input.asset_description(),
                 data_path,
                 mock_path,
+                input.mock_is_real(),
             )
 
             ui.notification_show("Dataset registered successfully!", duration=3)
