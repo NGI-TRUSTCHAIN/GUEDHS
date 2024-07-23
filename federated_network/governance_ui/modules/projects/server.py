@@ -8,7 +8,7 @@ from governance_ui.federated_operations.projects import (
     approve_request,
     reject_request,
 )
-from governance_ui.icons import arrow_left, warning_icon
+from governance_ui.icons import arrow_left, warning_icon, search_icon
 
 
 @module.server
@@ -45,7 +45,13 @@ def projects_server(input, output, session, projects_button):
             )
 
             inspect_button = ui.input_action_button(
-                f"inspect_project_{project['id']}", "Inspect", class_="btn btn-primary btn-sm"
+                f"inspect_project_{project['id']}",
+                ui.div(
+                    ui.span(search_icon, class_="table-icon-button"),
+                    ui.span("Inspect"),
+                    class_="d-flex justify-content-center align-items-center",
+                ),
+                class_="btn btn-primary btn-sm",
             )
 
             table_rows.append(
@@ -137,9 +143,17 @@ def projects_server(input, output, session, projects_button):
         for request in requests_table_info():
             request_time = request["request_time"].utc_timestamp
             formatted_date = datetime.utcfromtimestamp(request_time).strftime("%Y-%m-%d %H:%M")
+
             inspect_button = ui.input_action_button(
-                f"inspect_request_{request['index']}", "Inspect", class_="btn btn-primary btn-sm"
+                f"inspect_request_{request['index']}",
+                ui.div(
+                    ui.span(search_icon, class_="table-icon-button"),
+                    ui.span("Inspect"),
+                    class_="d-flex justify-content-center align-items-center",
+                ),
+                class_="btn btn-primary btn-sm",
             )
+
             table_rows.append(
                 ui.tags.tr(
                     ui.tags.td(request["description"]),
