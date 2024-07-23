@@ -8,7 +8,7 @@ from datetime import datetime
 def get_datasets(client):
     datasets = client.datasets.get_all()
 
-    if datasets is None or len(datasets) == 0:
+    if len(datasets) == 0:
         return []
 
     data = [
@@ -22,6 +22,7 @@ def get_datasets(client):
     ]
 
     logger.info("Listing datasets", client=client, action_id="list_datasets")
+
     return data
 
 

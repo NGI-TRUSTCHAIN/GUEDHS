@@ -1,12 +1,15 @@
 from shiny import reactive, render, ui
+from pathlib import Path
 from governance_ui.sections import sections
 from governance_ui.modules.auth import auth_ui, auth_server
 from governance_ui.modules.datasets import datasets_server
 from governance_ui.modules.projects import projects_server
+from governance_ui.modules.users import users_server
 from governance_ui.icons import logout_icon
 
 dashboards_ui = ui.page_sidebar(
     ui.sidebar(
+        ui.include_css(Path(__file__).parent / "styles.css"),
         ui.h4("GUEHDS Portal", class_="text-center my-4"),
         ui.output_ui("sidebar_buttons"),
         style="background-color: #e5e7eb; height: 100vh; box-shadow: 0 4px 8px rgba(0,0,0,0.1);",
@@ -39,7 +42,7 @@ def server(input, output, session):
                     ui.input_action_button(
                         section["button_id"],
                         ui.div(
-                            ui.span(section["icon"], style="margin-right: 12px;"),
+                            ui.span(section["icon"], class_="table-icon-button"),
                             ui.span(section["button_text"]),
                             class_="d-flex justify-content-start align-items-center",
                         ),
@@ -90,6 +93,8 @@ def server(input, output, session):
         print("Logging out")
         await session.send_custom_message("logout", None)
 
-    datasets_server("datasets", show_datasets_button=input.show_datasets_button)
+    datasets_server("datasets", show_datasets_button=input.list_datasets_button)
 
     projects_server("projects", projects_button=input.projects_button)
+
+    users_server("users", users_button=input.list_users_button)
