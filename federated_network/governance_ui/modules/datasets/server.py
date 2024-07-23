@@ -6,6 +6,7 @@ from governance_ui.federated_operations.datasets import (
     get_dataset_info,
     register_dataset,
 )
+from governance_ui.icons import search_icon
 
 
 @module.server
@@ -30,8 +31,15 @@ def datasets_server(input, output, session, show_datasets_button):
         table_rows = []
         for dataset in datasets():
             inspect_button = ui.input_action_button(
-                f"inspect_dataset_{dataset['id']}", "Inspect", class_="btn btn-primary btn-sm"
+                f"inspect_dataset_{dataset['id']}",
+                ui.div(
+                    ui.span(search_icon, class_="table-icon-button"),
+                    ui.span("Inspect"),
+                    class_="d-flex justify-content-center align-items-center",
+                ),
+                class_="btn btn-primary btn-sm",
             )
+
             table_rows.append(
                 ui.tags.tr(
                     ui.tags.td(dataset["name"]),
@@ -84,7 +92,7 @@ def datasets_server(input, output, session, show_datasets_button):
         mock_data.set(dataset_info["mock_df"])
 
         return ui.div(
-            ui.p("Dataset info:", style="font-weight: bold; font-size: 20px; margin: 16px 0 8px;"),
+            ui.h4("Dataset Info", style="margin: 16px 0 8px;"),
             ui.div(
                 ui.p("Dataset name:", class_="info-title"),
                 ui.p(dataset_info["dataset_name"]),
@@ -93,9 +101,9 @@ def datasets_server(input, output, session, show_datasets_button):
             ui.div(
                 ui.p("Dataset description:", class_="info-title"),
                 ui.p(f"{dataset_info['dataset_description'] or 'No description'}"),
-                style="font-size: 16px; display: flex; flex-wrap: wrap;",
+                class_="info-container",
             ),
-            ui.p("Asset info:", style="font-weight: bold; font-size: 20px; margin: 24px 0 8px;"),
+            ui.h4("Asset Info", style="margin: 20px 0 8px;"),
             ui.div(
                 ui.p("Asset name:", class_="info-title"),
                 ui.p(dataset_info["asset_name"]),
@@ -136,7 +144,7 @@ def datasets_server(input, output, session, show_datasets_button):
                 ui.p(dataset_info["mock_is_real"]),
                 class_="info-container",
             ),
-            ui.p("Mock preview:", style="font-weight: bold; font-size: 16px; margin-bottom: 8px;"),
+            ui.p("Mock preview:", style="font-weight: bold; margin-bottom: 8px;"),
             ui.output_data_frame("mock_df"),
             style="width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0 16px;",
         )

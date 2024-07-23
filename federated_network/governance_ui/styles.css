@@ -30,6 +30,12 @@
     box-shadow: none !important;
 }
 
+.table-icon-button {
+    margin-right: 6px;
+    display: inline-flex;
+    align-items: center;
+}
+
 
 /* Tables */
 
