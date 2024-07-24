@@ -1,3 +1,4 @@
+from governance_ui.actions import PySyftActions
 import syft as sy
 import pandas as pd
 from governance_ui.federated_operations.utils import override_input
@@ -6,6 +7,7 @@ from datetime import datetime
 
 
 def get_datasets(client):
+    logger.info("Listing datasets", client=client, action=PySyftActions.LIST_DATASETS.value)
     datasets = client.datasets.get_all()
 
     if len(datasets) == 0:
@@ -20,8 +22,6 @@ def get_datasets(client):
         }
         for dataset in datasets
     ]
-
-    logger.info("Listing datasets", client=client, action_id="list_datasets")
 
     return data
 
@@ -88,7 +88,7 @@ def register_dataset(
     logger.info(
         "Dataset registered",
         client=client,
-        action_id="register_dataset",
+        action=PySyftActions.CREATE_DATASET.value,
         dataset_id=str(dataset.id),
     )
 
@@ -115,7 +115,7 @@ def get_dataset_info(client, dataset_id):
     logger.info(
         "Inspecting dataset",
         client=client,
-        action_id="inspect_dataset",
+        action=PySyftActions.INSPECT_DATASET.value,
         dataset_id=dataset_id,
     )
 

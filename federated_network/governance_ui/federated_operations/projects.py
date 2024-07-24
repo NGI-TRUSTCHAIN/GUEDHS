@@ -1,3 +1,4 @@
+from governance_ui.actions import PySyftActions
 from governance_ui.logs import logger
 import pandas as pd
 from governance_ui.federated_operations.utils import override_input
@@ -5,6 +6,11 @@ from governance_ui.federated_operations.utils import override_input
 
 def get_projects(client):
     projects = client.projects.get_all()
+    logger.info(
+        "List access requests",
+        client=client,
+        action=PySyftActions.LIST_ACCESS_REQUESTS.value,
+    )
 
     if len(projects) == 0:
         return []
@@ -28,6 +34,11 @@ def get_projects(client):
 
 def get_all_requests_by_project_id(client, project_id):
     project = client.projects.get_by_uid(project_id)
+    logger.info(
+        "List access requests",
+        client=client,
+        action=PySyftActions.LIST_ACCESS_REQUESTS.value,
+    )
 
     return get_all_requests(client, project)
 
@@ -49,7 +60,7 @@ def get_request(client, request, request_index):
     logger.info(
         "Inspecting access request",
         client=client,
-        action_id="inspect_access_request",
+        action=PySyftActions.INSPECT_ACCESS_REQUEST.value,
         user_id=request.requesting_user_email,
         dataset_id=str(request.code.assets[0].id),  # FIX: Assuming only one dataset
         status=request.status.name,
@@ -113,7 +124,7 @@ def approve_request(client, project_id, request_index, real_result):
     logger.info(
         "Accept access request",
         client=client,
-        action_id="accept_access_request",
+        action=PySyftActions.ACCEPT_ACCESS_REQUEST.value,
         user_id=request.requesting_user_email,
         dataset_id=str(request.code.assets[0].id),
         status=request.status.name,
@@ -131,7 +142,7 @@ def reject_request(client, project_id, request_index, reason):
     logger.info(
         "Reject access request",
         client=client,
-        action_id="reject_access_request",
+        action=PySyftActions.REJECT_ACCESS_REQUEST.value,
         user_id=request.requesting_user_email,
         dataset_id=str(request.code.assets[0].id),
         status=request.status.name,
