@@ -15,3 +15,7 @@ auth.local.promptly.health:80 {
 syft.local.promptly.health:80 {
     reverse_proxy host.docker.internal:8081
 }
+
+blockchain.local.promptly.health:80 {
+    reverse_proxy host.docker.internal:3000
+}

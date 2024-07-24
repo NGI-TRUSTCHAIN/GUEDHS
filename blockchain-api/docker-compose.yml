@@ -14,6 +14,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    environment:
+      - JSON_RPC_URL=http://localhost:8545/
+
   test-runner:
     build:
       context: .
@@ -26,3 +29,14 @@ services:
     environment:
       - JSON_RPC_URL=http://blockchain-node:8545/
       - CONTRACT_ADDRESS=0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+
+  blockchain-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "3000:3000"
+    environment:
+      - JSON_RPC_URL=http://blockchain-node:8545/
+    env_file:
+      - .env
