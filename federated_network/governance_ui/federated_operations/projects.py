@@ -1,6 +1,6 @@
 from governance_ui.logs import logger
 import pandas as pd
-from unittest.mock import patch
+from governance_ui.federated_operations.utils import override_input
 
 
 def get_projects(client):
@@ -11,92 +11,75 @@ def get_projects(client):
 
     data = [
         {
+            "index": project_index,
             "id": project.id,
             "name": project.name,
             "description": project.description,
             "created_by": project.created_by,
             "total_requests": len(project.requests),
             "pending_requests": project.pending_requests,
+            "requests": get_all_requests(client, project),
         }
-        for project in projects
+        for project_index, project in enumerate(projects)
     ]
 
     return data
 
 
-def get_project_info(client, project_id):
+def get_all_requests_by_project_id(client, project_id):
     project = client.projects.get_by_uid(project_id)
 
-    if project is None:
-        return {}
-
-    project_requests = [
-        {
-            "index": index,
-            "id": request.id,
-            "description": "Request to approve " + request.code.service_func_name,
-            "request_time": request.request_time,
-            "requesting_user_name": request.requesting_user_name,
-            "requesting_user_email": request.requesting_user_email,
-            "status": request.status.name,
-        }
-        for index, request in enumerate(project.requests)
-    ]
-
-    project_info = {
-        "project_name": project.name,
-        "project_description": project.description,
-        "created_by": project.created_by,
-        "requests": project_requests,
-    }
-
-    logger.info("List access requests", client=client, action_id="list_access_requests")
-
-    return project_info
+    return get_all_requests(client, project)
 
 
-def get_request_info(client, project_id, request_index):
+def get_all_requests(client, project):
+    logger.info("Listing access requests", client=client, action_id="list_access_requests")
+
+    return [get_request(client, request, request_index) for request_index, request in enumerate(project.requests)]
+
+
+def get_request_by_project_id(client, project_id, request_index):
     project = client.projects.get_by_uid(project_id)
     request = project.requests[request_index]
-    dataset_info = {}
 
-    if len(request.code.assets) > 0:
-        asset = request.code.assets[0]
+    return get_request(client, request, request_index)
 
-        dataset_info = {
-            "asset_id": asset.id,
-            "asset_name": asset.name,
-            # "asset_description": asset.description,
-            "uploader_name": asset.uploader.name,
-            "uploader_email": asset.uploader.email,
-            "created_at": asset.created_at,
-            "mock_data": pd.DataFrame(asset.mock[:8], dtype=str),
-            "private_data": pd.DataFrame(asset.data[:8], dtype=str),
-        }
 
-    request_info = {
-        "id": request.id,
-        "description": "Request to approve " + request.code.service_func_name,
-        "requesting_user_name": request.requesting_user_name,
-        "requesting_user_email": request.requesting_user_email,
-        "request_time": request.request_time,
-        "status": request.status.name,
-        "function_name": request.code.service_func_name,
-        "function_code": request.code.raw_code,
-        "dataset_info": dataset_info,
-    }
-
+def get_request(client, request, request_index):
     logger.info(
-        "Inspect access request",
+        "Inspecting access request",
         client=client,
         action_id="inspect_access_request",
         user_id=request.requesting_user_email,
-        dataset_id=str(request_info["dataset_info"]["asset_id"]),
+        dataset_id=str(request.code.assets[0].id),  # FIX: Assuming only one dataset
         status=request.status.name,
         request_access_id=str(request.id),
     )
 
-    return request_info
+    return {
+        "index": request_index,
+        "id": request.id,
+        "description": "Request to approve " + request.code.service_func_name,
+        "request_time": request.request_time,
+        "requesting_user_name": request.requesting_user_name,
+        "requesting_user_email": request.requesting_user_email,
+        "status": request.status.name,
+        "function_name": request.code.service_func_name,
+        "function_code": request.code.raw_code,
+        "datasets": [
+            {
+                "asset_id": asset.id,
+                "asset_name": asset.name,
+                # "asset_description": asset.description,
+                "uploader_name": asset.uploader.name,
+                "uploader_email": asset.uploader.email,
+                "created_at": asset.created_at,
+                "mock_data": pd.DataFrame(asset.mock[:8], dtype=str),
+                "private_data": pd.DataFrame(asset.data[:8], dtype=str),
+            }
+            for asset in request.code.assets
+        ],
+    }
 
 
 def execute_code(client, project_id, request_index):
@@ -123,17 +106,9 @@ def execute_code(client, project_id, request_index):
     return mock_result, real_result
 
 
-def override_input(func, *args, **kwargs):
-    with patch("builtins.input", return_value="y"):
-        return func(*args, **kwargs)
-
-
 def approve_request(client, project_id, request_index, real_result):
     project = client.projects.get_by_uid(project_id)
     request = project.requests[request_index]
-
-    # request.accept_by_depositing_result(real_result, force=True)
-    override_input(request.accept_by_depositing_result, real_result, force=True)
 
     logger.info(
         "Accept access request",
@@ -145,13 +120,13 @@ def approve_request(client, project_id, request_index, real_result):
         request_access_id=str(request.id),
     )
 
+    # request.accept_by_depositing_result(real_result, force=True)
+    override_input(request.accept_by_depositing_result, real_result, force=True)
+
 
 def reject_request(client, project_id, request_index, reason):
     project = client.projects.get_by_uid(project_id)
     request = project.requests[request_index]
-
-    # request.deny(reason=reason)
-    override_input(request.deny, reason=reason)
 
     logger.info(
         "Reject access request",
@@ -162,3 +137,6 @@ def reject_request(client, project_id, request_index, reason):
         status=request.status.name,
         request_access_id=request.id,
     )
+
+    # request.deny(reason=reason)
+    override_input(request.deny, reason=reason)
