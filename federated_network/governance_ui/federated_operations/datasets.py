@@ -1,6 +1,6 @@
 import syft as sy
 import pandas as pd
-from unittest.mock import patch
+from governance_ui.federated_operations.utils import override_input
 from governance_ui.logs import logger
 from datetime import datetime
 
@@ -24,11 +24,6 @@ def get_datasets(client):
     logger.info("Listing datasets", client=client, action_id="list_datasets")
 
     return data
-
-
-def override_input(func, *args, **kwargs):
-    with patch("builtins.input", return_value="y"):
-        return func(*args, **kwargs)
 
 
 def register_dataset(

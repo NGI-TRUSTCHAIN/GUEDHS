@@ -30,6 +30,23 @@
     box-shadow: none !important;
 }
 
+.disabled-button {
+    background: none;
+    border: none;
+    color: #000;
+    cursor: not-allowed;
+}
+
+.disabled-button:hover,
+.disabled-button:active,
+.disabled-button:focus,
+.disabled-button:visited {
+    background: none !important;
+    color: #000 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .table-icon-button {
     margin-right: 6px;
     display: inline-flex;
