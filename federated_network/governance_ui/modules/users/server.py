@@ -84,10 +84,10 @@ def users_server(input, output, session, users_button):
                         )
                     ),
                     ui.tags.tbody(*table_rows),
-                    style="width: 50%; !important;",
+                    style="width: 100%; !important;",
                     class_="bigger-table",
                 ),
-                class_="d-flex flex-column w-auto h-75 overflow-auto",
+                class_="w-auto mw-50 h-75 overflow-auto",
             ),
             class_="d-flex flex-column w-100 h-100 align-items-center",
         )
