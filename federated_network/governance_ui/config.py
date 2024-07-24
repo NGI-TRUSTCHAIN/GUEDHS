@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     oauth_provider_auth_url: str
     oauth_provider_app_url: str
 
+    blockchain_api_url: str
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
 
 
