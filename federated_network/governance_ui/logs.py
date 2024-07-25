@@ -40,6 +40,12 @@ def send_to_blockchain(_, __, event_dict):
     return event_dict
 
 
+def get_from_blockchain(endpoint):
+    url = f"{config.blockchain_api_url}{endpoint}"
+    response = requests.get(url)
+    return response.json()
+
+
 structlog.configure(
     processors=[
         TimeStamper(fmt="iso"),

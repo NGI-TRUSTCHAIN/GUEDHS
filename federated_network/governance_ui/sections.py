@@ -1,7 +1,8 @@
 from governance_ui.modules.datasets import datasets_ui, register_dataset_ui
 from governance_ui.modules.projects import projects_ui
 from governance_ui.modules.users import list_users_ui, create_user_ui
-from governance_ui.icons import database_icon, database_add_icon, files_icon, user_icon, add_user_icon
+from governance_ui.modules.audit_logs import audit_logs_ui
+from governance_ui.icons import database_icon, database_add_icon, files_icon, user_icon, add_user_icon, history_icon
 
 
 sections = {
@@ -34,5 +35,11 @@ sections = {
         "icon": add_user_icon,
         "button_text": "Create User",
         "ui": create_user_ui("users"),
+    },
+    "audit_logs": {
+        "button_id": "audit_logs_button",
+        "icon": history_icon,
+        "button_text": "Audit Logs",
+        "ui": audit_logs_ui("audit_logs"),
     },
 }
