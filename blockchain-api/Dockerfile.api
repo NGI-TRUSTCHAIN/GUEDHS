@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8545
 
 # Run the Hardhat node
-CMD ["npm", "start"]
+CMD ["npm", "run", "swagger"]
