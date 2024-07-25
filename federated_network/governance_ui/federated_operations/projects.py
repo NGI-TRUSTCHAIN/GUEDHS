@@ -44,7 +44,11 @@ def get_all_requests_by_project_id(client, project_id):
 
 
 def get_all_requests(client, project):
-    logger.info("Listing access requests", client=client, action_id="list_access_requests")
+    logger.info(
+        "Listing access requests",
+        client=client,
+        action=PySyftActions.LIST_ACCESS_REQUESTS.value,
+    )
 
     return [get_request(client, request, request_index) for request_index, request in enumerate(project.requests)]
 
@@ -69,7 +73,7 @@ def get_request(client, request, request_index):
 
     return {
         "index": request_index,
-        "id": request.id,
+        "id": str(request.id),
         "description": "Request to approve " + request.code.service_func_name,
         "request_time": request.request_time,
         "requesting_user_name": request.requesting_user_name,
@@ -125,9 +129,9 @@ def approve_request(client, project_id, request_index, real_result):
         "Accept access request",
         client=client,
         action=PySyftActions.ACCEPT_ACCESS_REQUEST.value,
-        user_id=request.requesting_user_email,
-        dataset_id=str(request.code.assets[0].id),
-        status=request.status.name,
+        # user_id=request.requesting_user_email,
+        # dataset_id=str(request.code.assets[0].id),
+        status="granted",
         request_access_id=str(request.id),
     )
 
@@ -143,9 +147,9 @@ def reject_request(client, project_id, request_index, reason):
         "Reject access request",
         client=client,
         action=PySyftActions.REJECT_ACCESS_REQUEST.value,
-        user_id=request.requesting_user_email,
-        dataset_id=str(request.code.assets[0].id),
-        status=request.status.name,
+        # user_id=request.requesting_user_email,
+        # dataset_id=str(request.code.assets[0].id),
+        status="rejected",
         request_access_id=request.id,
     )
 
