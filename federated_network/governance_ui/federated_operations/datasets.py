@@ -29,15 +29,16 @@ def get_datasets(client):
 def register_dataset(
     client, dataset_name, dataset_description, asset_name, asset_description, data_path, mock_path, mock_is_real
 ):
+    user_id = str(client.me.id)
     main_data_subject = sy.DataSubject(
-        name="Clinical",
-        aliases=["clinical"],
+        name=user_id,
+        aliases=[user_id],
         description="",
     )
 
     data_subject = sy.DataSubject(
-        name="Clinical DataSubject",
-        aliases=["clinical:ds"],
+        name=f"{user_id} Data Subject",
+        aliases=[f"{user_id}:ds"],
         description="",
     )
 
@@ -65,7 +66,6 @@ def register_dataset(
     )
     asset.set_obj(data)
     asset.set_shape(data.shape)
-    asset.add_data_subject(data_subject)
 
     # Verify if mock is an URL or a Path or None
     if mock_path is not None:
@@ -81,9 +81,10 @@ def register_dataset(
         mock = data.sample(frac=0.1)
         asset.set_mock(mock, mock_is_real=True)
 
+    asset.add_data_subject(data_subject)
     dataset.add_asset(asset)
     # client.upload_dataset(dataset)
-    override_input(client.upload_dataset, dataset)
+    print(override_input(client.upload_dataset, dataset))
 
     logger.info(
         "Dataset registered",
