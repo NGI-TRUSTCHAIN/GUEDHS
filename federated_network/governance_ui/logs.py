@@ -23,7 +23,7 @@ def transform_to_api_format(event_dict):
         "user_id": "dataUserId",
         "dataset_id": "datasetId",
     }
-    return {key_transformer.get(key, key): value for key, value in event_dict.items() if key in key_transformer}
+    return {key_transformer.get(key, key): str(value) for key, value in event_dict.items() if key in key_transformer}
 
 
 def send_to_blockchain(_, __, event_dict):

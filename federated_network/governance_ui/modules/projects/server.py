@@ -295,6 +295,11 @@ def projects_server(input, output, session, projects_button):
                 ui.div(
                     ui.h4("Request Details", class_="mb-3"),
                     ui.div(
+                        ui.p("Id:", class_="info-title"),
+                        ui.p(request()["id"], class_="mb-0"),
+                        class_="info-container",
+                    ),
+                    ui.div(
                         ui.p("Description:", class_="info-title"),
                         ui.p(request()["description"], class_="mb-0"),
                         class_="info-container",
