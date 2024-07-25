@@ -1,3 +1,4 @@
+from governance_ui.actions import PySyftActions
 from syft.service.user.user import UserCreate
 from syft.service.user.user_roles import ServiceRole
 from governance_ui.logs import logger
@@ -11,10 +12,16 @@ db.connect()
 
 
 def get_users(client):
-    logger.info("Listing data users", client=client, action_id="list_data_users")
+    logger.info("Listing data users", client=client, action=PySyftActions.LIST_USERS.value)
 
     data = [
-        {"id": user.id, "name": user.name, "email": user.email, "role": user.role.name, "role_value": user.role.value}
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role.name,
+            "role_value": user.role.value,
+        }
         for user in client.users
     ]
 
@@ -27,6 +34,12 @@ def get_users(client):
 def block_user(client, user_id):
     for user in client.users:
         if user.id == user_id:
+            logger.info(
+                "Blocking data scientist user",
+                client=client,
+                action=PySyftActions.DELETE_USER.value,
+                user_id=user.email,
+            )
             user.update(role="NONE")
             break
 
@@ -34,12 +47,23 @@ def block_user(client, user_id):
 def unblock_user(client, user_id):
     for user in client.users:
         if user.id == user_id:
+            logger.info(
+                "Unblocking data scientist user",
+                client=client,
+                action=PySyftActions.CREATE_USER.value,
+                user_id=user.email,
+            )
             user.update(role="DATA_SCIENTIST")
             break
 
 
 def create_data_scientist(client, user_name, user_email):
-    logger.info("Creating data scientist user", client=client, action_id="create_user", user_id=user_email)
+    logger.info(
+        "Creating data scientist user",
+        client=client,
+        action=PySyftActions.CREATE_USER.value,
+        user_id=user_email,
+    )
 
     password = secrets.token_hex(8)
 
@@ -54,7 +78,12 @@ def create_data_scientist(client, user_name, user_email):
 
 
 def create_admin(client, user_name, user_email):
-    logger.info("Creating admin user", client=client, action_id="create_user", user_id=user_email)
+    logger.info(
+        "Creating admin user",
+        client=client,
+        action=PySyftActions.CREATE_USER.value,
+        user_id=user_email,
+    )
 
     pysyft_pwd = secrets.token_hex(8)
 
