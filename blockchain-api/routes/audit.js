@@ -54,6 +54,9 @@ function parseLog(action) {
 }
 
 router.get("/list-operation", async (req, res) => {
+    /* 	#swagger.tags = ['Auditing']
+        #swagger.description = 'Endpoint to retrieve all the list operations of a data custodian'
+    */
     try {
         const { dataCustodianId, nodeId } = req.query;
         const logEvents = await GUEDHS.GetLogs();
@@ -68,6 +71,9 @@ router.get("/list-operation", async (req, res) => {
 });
 
 router.get("/inspect-operation", async (req, res) => {
+    /* 	#swagger.tags = ['Auditing']
+        #swagger.description = 'Endpoint to retrieve all the inspect operations of a data custodian' 
+    */
     try {
         const { dataCustodianId, nodeId } = req.query;
         const logEvents = await GUEDHS.GetLogs();
@@ -82,6 +88,9 @@ router.get("/inspect-operation", async (req, res) => {
 });
 
 router.get("/create-operation", async (req, res) => {
+    /* 	#swagger.tags = ['Auditing']
+        #swagger.description = 'Endpoint to retrieve all the create/publish operations of a data custodian'
+    */
     try {
         const { dataCustodianId, nodeId } = req.query;
         const logEvents = await GUEDHS.GetLogs();
@@ -96,6 +105,9 @@ router.get("/create-operation", async (req, res) => {
 });
 
 router.get("/update-operation", async (req, res) => {
+    /* 	#swagger.tags = ['Auditing']
+        #swagger.description = 'Endpoint to retrieve all the update operations of a data custodian' 
+    */
     try {
         const { dataCustodianId, nodeId } = req.query;
         const logEvents = await GUEDHS.GetLogs();
@@ -110,6 +122,9 @@ router.get("/update-operation", async (req, res) => {
 });
 
 router.get("/delete-operation", async (req, res) => {
+    /* 	#swagger.tags = ['Auditing']
+        #swagger.description = 'Endpoint to retrieve all the delete/remove operations of a data custodian'
+    */
     try {
         const { dataCustodianId, nodeId } = req.query;
         const logEvents = await GUEDHS.GetLogs();
@@ -124,6 +139,9 @@ router.get("/delete-operation", async (req, res) => {
 });
 
 router.get("/all-operations", async (req, res) => {
+    /* 	#swagger.tags = ['Auditing']
+        #swagger.description = 'Endpoint to retrieve all the operations of a data custodian' 
+    */
     try {
         const { dataCustodianId, nodeId } = req.query;
         const logEvents = await GUEDHS.GetLogs();

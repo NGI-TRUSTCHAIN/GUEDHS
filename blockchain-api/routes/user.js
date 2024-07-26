@@ -17,7 +17,18 @@ const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 
 router.post("/list-data-users", async (req, res, next) => {
     /* 	#swagger.tags = ['Node User Management']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the listing of all data user registered in the data custodian's FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/listOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataCustodianId, nodeId }  = req.body;
         
@@ -43,7 +54,18 @@ router.post("/list-data-users", async (req, res, next) => {
 
 router.post("/inspect-data-user", async (req, res, next) => {
     /* 	#swagger.tags = ['Node User Management']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the inspection of a data user by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/userSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataUserId, dataCustodianId, nodeId } = req.body;
         
@@ -70,7 +92,18 @@ router.post("/inspect-data-user", async (req, res, next) => {
 
 router.post("/create-data-user", async (req, res, next) => {
     /* 	#swagger.tags = ['Node User Management']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the creation of a new data user to access the FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/userSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataUserId, dataCustodianId, nodeId } = req.body;
         
@@ -97,7 +130,18 @@ router.post("/create-data-user", async (req, res, next) => {
 
 router.post("/delete-data-user", async (req, res, next) => {
     /* 	#swagger.tags = ['Node User Management']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the removal of a data user from the FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/userSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataUserId, dataCustodianId, nodeId } = req.body;
         

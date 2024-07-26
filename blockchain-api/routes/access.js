@@ -22,7 +22,18 @@ function connectWithPrivateKey(privateKey) {
 
 router.post("/list-access", async (req, res) => {
     /* 	#swagger.tags = ['Code Request Review']
-        #swagger.description = 'Allows a user(custodian) to list the data access requests related to their FHDN node' */
+        #swagger.description = 'Logs the listing of a data access requests by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/listOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataCustodianId, nodeId }  = req.body;
         
@@ -49,7 +60,18 @@ router.post("/list-access", async (req, res) => {
 
 router.post("/inspect-access", async (req, res) => {
     /* 	#swagger.tags = ['Code Request Review']
-        #swagger.description = 'Allows a user(custodian) to inspect an access request in more detail, including its code' */
+        #swagger.description = 'Logs the inspection of a data access request by the data custodian on its FHDN node' 
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/accessSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { accessId, dataCustodianId, nodeId } = req.body;
         
@@ -76,8 +98,18 @@ router.post("/inspect-access", async (req, res) => {
 
 router.post("/request-access", async (req, res, next) => {
     /* 	#swagger.tags = ['Code Request Review']
-        #swagger.description = 'Allows a user(data processor) to request access to data'
-    } */
+        #swagger.description = 'Logs the data user requests for access in the data custodian's FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/accessSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { accessId, dataCustodianId, nodeId } = req.body;
         
@@ -104,8 +136,18 @@ router.post("/request-access", async (req, res, next) => {
 
 router.post("/update-access-request", async (req, res, next) => {
     /* 	#swagger.tags = ['Code Request Review']
-        #swagger.description = 'Allows a user(custodian) to set the new status of a request to granted'
-        */
+        #swagger.description = 'Logs the data access request update by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/accessSpecificUpdateOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { accessId, dataCustodianId, nodeId, status } = req.body;
         
