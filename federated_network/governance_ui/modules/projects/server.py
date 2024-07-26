@@ -359,6 +359,11 @@ def projects_server(input, output, session, projects_button):
         return ui.div(
             ui.h4("Dataset Details", class_="mb-3"),
             ui.div(
+                ui.p("Asset name:", class_="info-title"),
+                ui.p(request()["datasets"][0]["asset_name"], class_="mb-0"),
+                class_="info-container",
+            ),
+            ui.div(
                 ui.p("Dataset uploaded by:", class_="info-title"),
                 ui.p(
                     f"{request()['datasets'][0]['uploader_name']} ({request()['datasets'][0]['uploader_email']})",
