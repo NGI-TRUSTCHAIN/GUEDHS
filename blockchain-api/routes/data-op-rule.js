@@ -17,7 +17,18 @@ const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 
 router.post("/list-data-op-rule", async (req, res, next) => {
     /* 	#swagger.tags = ['Data Operation Rule']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the listing of a data operation rule by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/listOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataCustodianId, nodeId }  = req.body;
         
@@ -43,7 +54,18 @@ router.post("/list-data-op-rule", async (req, res, next) => {
 
 router.post("/inspect-data-op-rule", async (req, res, next) => {
     /* 	#swagger.tags = ['Data Operation Rule']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the inspection of a data operation rule by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/dataOpSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataOpId, dataCustodianId, nodeId } = req.body;
         
@@ -70,7 +92,18 @@ router.post("/inspect-data-op-rule", async (req, res, next) => {
 
 router.post("/create-data-op-rule", async (req, res, next) => {
     /* 	#swagger.tags = ['Data Operation Rule']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the creation of a data operation rule by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/dataOpSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataOpId, dataCustodianId, nodeId } = req.body;
         
@@ -97,7 +130,18 @@ router.post("/create-data-op-rule", async (req, res, next) => {
 
 router.post("/update-data-op-rule", async (req, res, next) => {
     /* 	#swagger.tags = ['Data Operation Rule']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the update of a data operation rule by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/dataOpSpecificUpdateOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataOpId, dataCustodianId, nodeId, status } = req.body;
         
@@ -123,9 +167,20 @@ router.post("/update-data-op-rule", async (req, res, next) => {
     }
 });
 
-router.post("/delete-data-op-rule", async (req, res, next) => {
+router.post("/remove-data-op-rule", async (req, res, next) => {
     /* 	#swagger.tags = ['Data Operation Rule']
-        #swagger.description = 'Endpoint to sign in a specific user' */
+        #swagger.description = 'Logs the removal of a data operation rule by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/dataOpSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataOpId, dataCustodianId, nodeId } = req.body;
         

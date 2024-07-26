@@ -27,36 +27,61 @@ const doc = {
         {
             "name": "Datasets",
             "description": "Endpoints"
+        },
+        {
+            "name": "Auditing",
+            "description": "Endpoints"
         }
     ],
     components: {
         schemas: {
-            someBody: {
-                $name: "Jhon Doe",
-                $age: 29,
-                about: ""
+            listOperation: {
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f"
             },
-            someResponse: {
-                name: "Jhon Doe",
-                age: 29,
-                diplomas: [
-                    {
-                        school: "XYZ University",
-                        year: 2020,
-                        completed: true,
-                        internship: {
-                            hours: 290,
-                            location: "XYZ Company"
-                        }
-                    }
-                ]
+            accessSpecificOperation: {
+                $accessId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f"
             },
-            someEnum: {
-                '@enum': [
-                    "red",
-                    "yellow",
-                    "green"
-                ]
+            accessSpecificUpdateOperation: {
+                $accessId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f",
+                $status: {
+                    '@enum': [
+                        "granted",
+                        "rejected",
+                        "revoked"
+                    ]
+                }
+            },
+            dataOpSpecificOperation: {
+                $dataOpId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f"
+            },
+            dataOpSpecificUpdateOperation: {
+                $dataOpId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f",
+                $status: {
+                    '@enum': [
+                        "granted",
+                        "rejected",
+                        "revoked"
+                    ]
+                }
+            },
+            datasetSpecificOperation: {
+                $datasetId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f"
+            },
+            userSpecificOperation: {
+                $accessId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataCustodianId: "info@openmined.org",
+                $nodeId: "28d2428661e84555abcda20764aa6c8f"
             }
         },
         securitySchemes:{
