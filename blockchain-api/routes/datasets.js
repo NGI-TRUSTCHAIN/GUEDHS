@@ -17,7 +17,18 @@ const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 
 router.post("/list-datasets", async (req, res, next) => {
     /* 	#swagger.tags = ['Datasets']
-        #swagger.description = 'Allows a user(custodian) to list the datasets currently uploaded to their FDHN node' */
+        #swagger.description = 'Logs the listing of a dataset by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/listOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { dataCustodianId, nodeId }  = req.body;
         
@@ -43,7 +54,18 @@ router.post("/list-datasets", async (req, res, next) => {
 
 router.post("/inspect-dataset", async (req, res, next) => {
     /* 	#swagger.tags = ['Datasets']
-        #swagger.description = 'Allows user(custodian) to inspect in detail the dataset such as types of data, classes, etc' */
+        #swagger.description = 'Logs the inspection of a dataset by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/datasetSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { datasetId, dataCustodianId, nodeId } = req.body;
         
@@ -68,9 +90,20 @@ router.post("/inspect-dataset", async (req, res, next) => {
     }
 });
 
-router.post("/create-dataset", async (req, res, next) => {
+router.post("/publish-dataset", async (req, res, next) => {
     /* 	#swagger.tags = ['Datasets']
-        #swagger.description = 'Creates and makes available a new dataset on the FHDN node' */
+        #swagger.description = 'Logs the publishing of a dataset by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/datasetSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { datasetId, dataCustodianId, nodeId } = req.body;
         
@@ -95,9 +128,20 @@ router.post("/create-dataset", async (req, res, next) => {
     }
 });
 
-router.post("/delete-dataset", async (req, res, next) => {
+router.post("/remove-dataset", async (req, res, next) => {
     /* 	#swagger.tags = ['Datasets']
-        #swagger.description = 'Deletes a dataset from the FHDN node' */
+        #swagger.description = 'Logs the removal of a dataset by the data custodian on its FHDN node'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: "#/components/schemas/datasetSpecificOperation"
+                    }  
+                }
+            }
+        } 
+    */
     try {
         const { datasetId, dataCustodianId, nodeId } = req.body;
         
