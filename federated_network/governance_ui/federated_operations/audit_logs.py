@@ -7,6 +7,20 @@ def get_audit_logs(filters):
     logs = get_from_blockchain(endpoint=endpoint)
     filtered_logs = []
 
+    def convert_action_type(action_type):
+        if action_type == "listActions":
+            return "List Actions"
+        elif action_type == "inspectActions":
+            return "Inspect Actions"
+        elif action_type == "createActions":
+            return "Create Actions"
+        elif action_type == "updateActions":
+            return "Update Actions"
+        elif action_type == "deleteActions":
+            return "Delete Actions"
+        else:
+            return action_type
+
     def convert_timestamp(timestamp):
         parts = timestamp.split()
         return " ".join(parts[:5])
@@ -16,7 +30,7 @@ def get_audit_logs(filters):
             for log in logs[action_type]:
                 filtered_logs.append(
                     {
-                        "action_type": action_type,
+                        "action_type": convert_action_type(action_type),
                         "action": log["action"][1:],
                         "timestamp": convert_timestamp(log["timestamp"]),
                         "dataCustodianUUID": log["dataCustodianUUID"],

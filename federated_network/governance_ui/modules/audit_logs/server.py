@@ -89,13 +89,11 @@ def audit_logs_server(input, output, session, audit_button):
         @reactive.effect
         @reactive.event(input[f"inspect_log_{index}"], ignore_init=True)
         def inspect_log_handler():
-            print("Inspecting log", index)
             current_log_index.set(index)
 
     @reactive.effect
     @reactive.event(current_log_index)
     def show_modal():
-        print("Current log index", current_log_index())
         modal = ui.modal(
             ui.div(
                 ui.output_code("render_json"),
