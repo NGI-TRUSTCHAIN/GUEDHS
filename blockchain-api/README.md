@@ -9,7 +9,19 @@ Try running some of the following tasks:
 - Docker
 - Node
 
-## Run the Blockchain API
+## Run for testing
+
+All the components have been dockerized, so to run the API for testing purposes you simply have to run the following command:
+
+```bash
+docker-compose up -d
+```
+
+This will start all the required services, and you will be able to observe the logs of the `test-runner` container to validate the unit test results.
+
+The API will also be operational on `localhost:3000`, and you can access the swagger documentation on `localhost:3000/docs` and experiment with the endpoints.
+
+## Run for development
 
 1. Install the packages needed to run the API
 
@@ -20,8 +32,7 @@ npm install
 2. Setup and run the blockchain node
 
 ```bash
-  docker-compose build
-  docker-compose up -d
+  docker-compose up -d blockchain-node
 ```
 
 3. Deploy the smart contract onto the blockchain node
@@ -39,7 +50,7 @@ npm install
     
     4.1. Copy the contract address to the .env file and paste to the CONTRACT_ADDRESS variable
 
-5. Run the WebAPI
+5. Run the WebAPI locally
 ```bash
   npm start
 ```
