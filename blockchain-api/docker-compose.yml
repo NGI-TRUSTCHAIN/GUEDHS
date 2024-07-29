@@ -7,28 +7,21 @@ services:
       dockerfile: Dockerfile.hardhat
     ports:
       - "8545:8545"
-    volumes:
-      - .:/usr/src/app
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8545"]
       interval: 10s
       timeout: 5s
       retries: 5
-    environment:
-      - JSON_RPC_URL=http://localhost:8545/
 
-  test-runner:
+  blockchain-tests:
     build:
       context: .
       dockerfile: Dockerfile.tests
-    volumes:
-      - .:/usr/src/app
     depends_on:
       blockchain-node:
         condition: service_healthy
-    environment:
-      - JSON_RPC_URL=http://blockchain-node:8545/
-      - CONTRACT_ADDRESS=0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+    env_file:
+      - .env
 
   blockchain-api:
     build:
@@ -36,7 +29,8 @@ services:
       dockerfile: Dockerfile.api
     ports:
       - "3000:3000"
-    environment:
-      - JSON_RPC_URL=http://blockchain-node:8545/
+    depends_on:
+      blockchain-node:
+        condition: service_healthy
     env_file:
       - .env

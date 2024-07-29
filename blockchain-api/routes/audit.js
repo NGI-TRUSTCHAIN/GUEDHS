@@ -34,20 +34,20 @@ function mapStatus(status) {
 function parseLog(action) {
     let parsedAction = {
         status: mapStatus(action.status) || "N/A",
-        dataCustodianUUID: action.ids.dataCustodianUUID,
-        nodeUUID: action.ids.nodeUUID,
+        dataCustodianId: action.ids.dataCustodianUUID,
+        nodeId: action.ids.nodeUUID,
         timestamp: new Date(action.ids.timestamp * 1000).toString(),
         action: action.ids.action
     };
 
     if (action.ids.action.includes("dataset")) {
-        parsedAction.datasetUUID = action.uuid || "N/A";
+        parsedAction.datasetId = action.uuid || "N/A";
     } else if (action.ids.action.includes("access")) {
-        parsedAction.accessUUID = action.uuid || "N/A";
+        parsedAction.accessId = action.uuid || "N/A";
     } else if (action.ids.action.includes("data-user")) {
-        parsedAction.dataUserUUID = action.uuid || "N/A";
+        parsedAction.dataUserId = action.uuid || "N/A";
     } else {
-        parsedAction.uuid = action.uuid || "N/A";
+        parsedAction.dataOpId = action.uuid || "N/A";
     }
 
     return parsedAction;

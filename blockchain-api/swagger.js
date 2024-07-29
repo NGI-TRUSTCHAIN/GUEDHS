@@ -79,7 +79,7 @@ const doc = {
                 $nodeId: "28d2428661e84555abcda20764aa6c8f"
             },
             userSpecificOperation: {
-                $accessId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataUserId: "e8de5054a3ab4990a18d42a6b014335d",
                 $dataCustodianId: "info@openmined.org",
                 $nodeId: "28d2428661e84555abcda20764aa6c8f"
             }
