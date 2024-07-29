@@ -13,16 +13,15 @@ services:
     environment:
       - JSON_RPC_URL=http://blockchain-node:8545/
 
-  test-runner:
+  blockchain-tests:
     build:
       context: .
       dockerfile: Dockerfile.tests
     depends_on:
       blockchain-node:
         condition: service_healthy
-    environment:
-      - JSON_RPC_URL=http://blockchain-node:8545/
-      - CONTRACT_ADDRESS=0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+    env_file:
+      - .env
 
   blockchain-api:
     build:
@@ -35,3 +34,5 @@ services:
     depends_on:
       blockchain-node:
         condition: service_healthy
+    env_file:
+      - .env
