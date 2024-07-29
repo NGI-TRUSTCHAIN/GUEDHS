@@ -1,5 +1,5 @@
 # Use the official Node.js image as a base image
-FROM node:20
+FROM node:20-alpine
 
 # Create and change to the app directory
 WORKDIR /usr/src/app
@@ -11,7 +11,9 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY hardhat.config.js .
+COPY ./test ./test
+COPY ./contracts ./contracts
 
 # Expose port 8545 for the JSON-RPC connection
 EXPOSE 8545

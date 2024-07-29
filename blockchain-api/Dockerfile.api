@@ -1,5 +1,5 @@
 # Use the official Node.js image as a base image
-FROM node:20
+FROM node:20-alpine
 
 # Create and change to the app directory
 WORKDIR /usr/src/app
@@ -11,7 +11,12 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY ./contracts ./contracts
+COPY ./public ./public
+COPY ./routes ./routes
+COPY ./views ./views
+COPY ./scripts ./scripts
+COPY ./*.js .
 
 # Expose port 8545 for the JSON-RPC connection
 EXPOSE 8545
