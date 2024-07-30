@@ -7,7 +7,7 @@ from governance_ui.federated_operations.utils import override_input
 def get_projects(client):
     projects = client.projects.get_all()
     logger.info(
-        "List access requests",
+        "Listing access requests",
         client=client,
         action=PySyftActions.LIST_ACCESS_REQUESTS.value,
     )
@@ -34,8 +34,9 @@ def get_projects(client):
 
 def get_all_requests_by_project_id(client, project_id):
     project = client.projects.get_by_uid(project_id)
+
     logger.info(
-        "List access requests",
+        "Listing access requests",
         client=client,
         action=PySyftActions.LIST_ACCESS_REQUESTS.value,
     )
@@ -44,12 +45,6 @@ def get_all_requests_by_project_id(client, project_id):
 
 
 def get_all_requests(client, project):
-    logger.info(
-        "Listing access requests",
-        client=client,
-        action=PySyftActions.LIST_ACCESS_REQUESTS.value,
-    )
-
     return [get_request(client, request, request_index) for request_index, request in enumerate(project.requests)]
 
 
@@ -81,10 +76,10 @@ def get_request(client, request, request_index):
         "status": request.status.name,
         "function_name": request.code.service_func_name,
         "function_code": request.code.raw_code,
-        "datasets": [
-            {
-                "asset_id": asset.id,
-                "asset_name": asset.name,
+        "datasets": {
+            str(asset.id): {
+                "id": str(asset.id),
+                "name": asset.name,
                 # "asset_description": asset.description,
                 "uploader_name": asset.uploader.name,
                 "uploader_email": asset.uploader.email,
@@ -93,7 +88,7 @@ def get_request(client, request, request_index):
                 "private_data": pd.DataFrame(asset.data[:8], dtype=str),
             }
             for asset in request.code.assets
-        ],
+        },
     }
 
 
@@ -105,18 +100,15 @@ def execute_code(client, project_id, request_index):
     if len(func.assets) == 0:
         return None, None
 
-    asset = func.assets[0]
-
+    assets = func.assets
     input_keys = func.input_kwargs
     users_function = func.unsafe_function
 
-    kwargs1 = {input_keys[0]: asset.mock}
+    kwargs = {input_keys[i]: asset.mock for i, asset in enumerate(assets)}
+    mock_result = users_function(**kwargs)
 
-    mock_result = users_function(**kwargs1)
-
-    kwargs2 = {input_keys[0]: asset.data}
-
-    real_result = users_function(**kwargs2)
+    kwargs = {input_keys[i]: asset.data for i, asset in enumerate(assets)}
+    real_result = users_function(**kwargs)
 
     return mock_result, real_result
 
@@ -126,7 +118,7 @@ def approve_request(client, project_id, request_index, real_result):
     request = project.requests[request_index]
 
     logger.info(
-        "Accept access request",
+        "Accepting access request",
         client=client,
         action=PySyftActions.ACCEPT_ACCESS_REQUEST.value,
         # user_id=request.requesting_user_email,
@@ -144,7 +136,7 @@ def reject_request(client, project_id, request_index, reason):
     request = project.requests[request_index]
 
     logger.info(
-        "Reject access request",
+        "Rejecting access request",
         client=client,
         action=PySyftActions.REJECT_ACCESS_REQUEST.value,
         # user_id=request.requesting_user_email,
