@@ -19,7 +19,8 @@ def projects_server(input, output, session, projects_button):
     current_request_index = reactive.Value(None)
     registered_handlers = set()
     request = reactive.Value({})
-    global_real_result = reactive.Value(None)
+    current_dataset_id = reactive.Value(None)
+    function_results = reactive.Value((None, None))  # (mock_result, real_result)
     request_finished = reactive.Value(None)
 
     @render.ui
@@ -63,11 +64,18 @@ def projects_server(input, output, session, projects_button):
         if projects() == []:
             return ui.h4("No projects available.", class_="text-center")
 
+        sorted_projects = sorted(
+            projects(), key=lambda project: project["requests"][0]["request_time"].utc_timestamp, reverse=True
+        )
+
         table_rows = []
-        for project in projects():
+        for project in sorted_projects:
             short_description = (
                 project["description"][:30] + "..." if len(project["description"]) > 30 else project["description"]
             )
+
+            created_at = project["requests"][0]["request_time"].utc_timestamp
+            formatted_date = datetime.fromtimestamp(created_at).strftime("%Y-%m-%d %H:%M")
 
             inspect_button = ui.input_action_button(
                 f"inspect_project_{project['index']}",
@@ -83,8 +91,9 @@ def projects_server(input, output, session, projects_button):
                 ui.tags.tr(
                     ui.tags.td(project["name"]),
                     ui.tags.td(short_description),
+                    ui.tags.td(formatted_date),
                     ui.tags.td(project["created_by"]),
-                    ui.tags.td(project["total_requests"], style="text-align: center;"),
+                    # ui.tags.td(project["total_requests"], style="text-align: center;"),
                     ui.tags.td(project["pending_requests"], style="text-align: center;"),
                     ui.tags.td(inspect_button),
                 )
@@ -100,8 +109,9 @@ def projects_server(input, output, session, projects_button):
                     ui.tags.tr(
                         ui.tags.th("Name"),
                         ui.tags.th("Description"),
+                        ui.tags.th("Created At"),
                         ui.tags.th("Created By"),
-                        ui.tags.th("Total Requests"),
+                        # ui.tags.th("Total Requests"),
                         ui.tags.th("Pending Requests"),
                         ui.tags.th(""),
                     )
@@ -195,7 +205,7 @@ def projects_server(input, output, session, projects_button):
         table_rows = []
         for request in requests():
             request_time = request["request_time"].utc_timestamp
-            formatted_date = datetime.utcfromtimestamp(request_time).strftime("%Y-%m-%d %H:%M")
+            formatted_date = datetime.fromtimestamp(request_time).strftime("%Y-%m-%d %H:%M")
 
             inspect_button = ui.input_action_button(
                 f"inspect_request_{request['index']}",
@@ -248,12 +258,12 @@ def projects_server(input, output, session, projects_button):
     @reactive.event(input.first_back_button)
     def first_back_button_handler():
         current_project_index.set(None)
-        current_request_index.set(None)
 
     @reactive.effect
     @reactive.event(input.second_back_button)
     def second_back_button_handler():
         current_request_index.set(None)
+        function_results.set((None, None))
 
     def handle_inspect_request(request_index):
         @reactive.effect
@@ -265,24 +275,21 @@ def projects_server(input, output, session, projects_button):
     @reactive.effect
     @reactive.event(request_finished)
     def refresh_request():
-        print("Refreshing request")
         project_id = projects()[current_project_index()]["id"]
         updated_request = get_request_by_project_id(session._parent.client, project_id, current_request_index())
         request.set(updated_request)
 
     @render.ui
-    # @reactive.event(current_request_index, request_finished)
+    @reactive.event(current_request_index, request_finished)
     def request_info():
         if current_request_index() is None:
             return None
-
-        # request.set(requests()[current_request_index()])
 
         if request()["status"] == "PENDING" and request_finished() is True:
             request_finished.set(False)
 
         request_time = request()["request_time"].utc_timestamp
-        formatted_request_date = datetime.utcfromtimestamp(request_time).strftime("%Y-%m-%d %H:%M")
+        formatted_request_date = datetime.fromtimestamp(request_time).strftime("%Y-%m-%d %H:%M")
 
         return ui.div(
             ui.input_action_button(
@@ -331,7 +338,7 @@ def projects_server(input, output, session, projects_button):
                             ui.output_ui("approval_section"),
                             style="width: 90%;",
                         ),
-                        style="margin-top: 50px;",
+                        style="margin-top: 42px;",
                     ),
                     class_="d-flex flex-column w-50 h-100",
                 ),
@@ -346,27 +353,43 @@ def projects_server(input, output, session, projects_button):
 
     @render.ui
     def dataset_info():
-        if request()["datasets"][0] == {}:
+        datasets = request()["datasets"]
+        if len(datasets) == 0:
             return ui.div(
                 ui.h3("No dataset required for this function."),
                 class_="d-flex h-100 w-100 justify-content-center align-items-center",
                 style="margin-bottom: 64px;",
             )
+        else:
+            current_dataset_id.set(list(datasets.keys())[0])
+            if len(datasets) == 1:
+                return ui.output_ui("render_dataset_info")
+            else:
+                return ui.div(
+                    ui.output_ui("multiple_datasets_nav"),
+                    ui.output_ui("render_dataset_info"),
+                    class_="d-flex flex-column w-100 h-100",
+                )
 
-        dataset_time = request()["datasets"][0]["created_at"].utc_timestamp
-        formatted_dataset_date = datetime.utcfromtimestamp(dataset_time).strftime("%Y-%m-%d %H:%M")
+    @render.ui
+    @reactive.event(current_dataset_id)
+    def render_dataset_info():
+        dataset = request()["datasets"][current_dataset_id()]
+
+        dataset_time = dataset["created_at"].utc_timestamp
+        formatted_dataset_date = datetime.fromtimestamp(dataset_time).strftime("%Y-%m-%d %H:%M")
 
         return ui.div(
-            ui.h4("Dataset Details", class_="mb-3"),
+            ui.h4("Dataset Details", class_="my-2"),
             ui.div(
                 ui.p("Asset name:", class_="info-title"),
-                ui.p(request()["datasets"][0]["asset_name"], class_="mb-0"),
+                ui.p(dataset["name"], class_="mb-0"),
                 class_="info-container",
             ),
             ui.div(
                 ui.p("Dataset uploaded by:", class_="info-title"),
                 ui.p(
-                    f"{request()['datasets'][0]['uploader_name']} ({request()['datasets'][0]['uploader_email']})",
+                    f"{dataset['uploader_name']} ({dataset['uploader_email']})",
                     class_="mb-0",
                 ),
                 class_="info-container",
@@ -388,14 +411,40 @@ def projects_server(input, output, session, projects_button):
             ),
         )
 
+    @render.ui
+    def multiple_datasets_nav():
+        datasets = request()["datasets"]
+        items = []
+
+        for id, dataset in datasets.items():
+            items.append(
+                ui.nav_panel(
+                    dataset["name"],
+                    value=id,
+                )
+            )
+
+        return ui.navset_tab(
+            *items,
+            id="datasets_tab",
+            selected=list(datasets.keys())[0],
+        )
+
+    @reactive.effect
+    @reactive.event(input.datasets_tab)
+    def handle_navbar():
+        current_dataset_id.set(input.datasets_tab())
+
     @render.data_frame
     def pvt_data_df():
-        pvt_data_df = request()["datasets"][0]["private_data"]
+        dataset = request()["datasets"][current_dataset_id()]
+        pvt_data_df = dataset["private_data"]
         return render.DataGrid(pvt_data_df, width="100%")
 
     @render.data_frame
     def mock_df():
-        mock_df = request()["datasets"][0]["mock_data"]
+        dataset = request()["datasets"][current_dataset_id()]
+        mock_df = dataset["mock_data"]
         return render.DataGrid(mock_df, width="100%")
 
     @render.code
@@ -403,6 +452,7 @@ def projects_server(input, output, session, projects_button):
         return request()["function_code"]
 
     @render.ui
+    @reactive.event(current_request_index, function_results, request_finished)
     def approval_section():
         if request()["status"] == "PENDING":
             return ui.div(
@@ -433,12 +483,46 @@ def projects_server(input, output, session, projects_button):
                 style="margin-top: 32px;",
             )
 
+        elif request()["status"] == "APPROVED":
+            if function_results()[0] and function_results()[1]:
+                return ui.div(
+                    ui.div(
+                        ui.p("Mock result:", class_="info-title"),
+                        ui.p(function_results()[0], class_="mb-0"),
+                        class_="info-container",
+                    ),
+                    ui.div(
+                        ui.p("Real result:", class_="info-title"),
+                        ui.p(function_results()[1], class_="mb-0"),
+                        class_="info-container",
+                    ),
+                    class_="d-flex flex-column mt-2",
+                    style="max-height: 150px; overflow: auto;",
+                )
+
+            return ui.div(
+                ui.input_action_button(
+                    "show_result_button",
+                    "Show Result",
+                    class_="btn btn-secondary",
+                ),
+                class_="d-flex justify-content-center align-items-center",
+                style="margin-top: 24px;",
+            )
+
+    @reactive.effect
+    @reactive.event(input.show_result_button)
+    def show_result_button_handler():
+        project_id = projects()[current_project_index()]["id"]
+        mock_result, real_result = execute_code(session._parent.client, project_id, current_request_index())
+        function_results.set((mock_result, real_result))
+
     @reactive.effect
     @reactive.event(input.execute_button)
     def execute_button_handler():
         project_id = projects()[current_project_index()]["id"]
         mock_result, real_result = execute_code(session._parent.client, project_id, current_request_index())
-        global_real_result.set(real_result)
+        function_results.set((mock_result, real_result))
 
         modal = ui.modal(
             ui.div(
@@ -482,14 +566,39 @@ def projects_server(input, output, session, projects_button):
     @reactive.event(input.approve_button)
     def approve_button_handler():
         project_id = projects()[current_project_index()]["id"]
-        approve_request(session._parent.client, project_id, current_request_index(), global_real_result())
+        approve_request(session._parent.client, project_id, current_request_index(), function_results()[1])
         ui.modal_remove()
         request_finished.set(True)
 
     @reactive.effect
     @reactive.event(input.reject_button)
     def reject_button_handler():
+        reject_reason_modal = ui.modal(
+            ui.div(
+                ui.input_text_area(
+                    "reject_reason",
+                    "Reason for rejection",
+                    rows=4,
+                    width="100%",
+                ),
+                ui.input_action_button(
+                    "confirm_reject_button",
+                    "Reject",
+                    class_="btn btn-danger pt-3",
+                ),
+                class_="d-flex flex-column",
+            ),
+            title="Please provide a reason for rejecting the request.",
+            footer=None,
+            size="m",
+            easy_close=True,
+        )
+        ui.modal_show(reject_reason_modal)
+
+    @reactive.effect
+    @reactive.event(input.confirm_reject_button)
+    def confirm_reject_button_handler():
         project_id = projects()[current_project_index()]["id"]
-        reject_request(session._parent.client, project_id, current_request_index(), "")
+        reject_request(session._parent.client, project_id, current_request_index(), input.reject_reason())
         ui.modal_remove()
         request_finished.set(True)
