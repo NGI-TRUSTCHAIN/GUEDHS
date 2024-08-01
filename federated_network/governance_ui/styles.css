@@ -98,3 +98,40 @@
     border-collapse: separate;
     border-spacing: 0;
 }
+
+
+/* Approval Rules Table */
+
+.rules-table th {
+    background-color: #e5e7eb;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.rules-table td {
+    background-color: #f3f4f6;
+    padding: 10px 20px;
+    text-align: center;
+    border-top: 1px solid #d1d5db;
+}
+
+.rules-table {
+    border: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+.accordion {
+    --bs-accordion-bg: #e5e7eb;
+    --bs-accordion-border-color: #d1d5db;
+    --bs-accordion-border-width: 1px;
+    --bs-accordion-border-radius: 6px;
+}
+
+.accordion-body {
+    padding: 0;
+}
+
+.accordion-title {
+    font-size: 18px;
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Rule" ALTER COLUMN "user_id" DROP NOT NULL,
+ALTER COLUMN "dataset_id" DROP NOT NULL;
