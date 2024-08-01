@@ -14,15 +14,13 @@ from governance_ui.icons import block_icon, undo_icon
 def users_server(input, output, session, users_button):
     users = reactive.Value([])
     registered_handlers = set()
-    user_updated = reactive.Value(False)
+    trigger_update_users = reactive.Value(True)
 
     @render.ui
-    @reactive.event(users_button, user_updated, ignore_none=False)
+    @reactive.event(users_button, trigger_update_users)
     def list_users_page():
+        print("list_users_page")
         users.set(get_users(session._parent.client))
-
-        if user_updated():
-            user_updated.set(False)
 
         if len(users()) > 0:
             return ui.output_ui("users_table")
@@ -97,14 +95,14 @@ def users_server(input, output, session, users_button):
         @reactive.event(input[f"block_user_{user_id}"])
         def block_handler():
             block_user(session._parent.client, user_id)
-            user_updated.set(True)
+            trigger_update_users.set(not trigger_update_users())
 
     def handle_unblock_user(user_id):
         @reactive.effect
         @reactive.event(input[f"unblock_user_{user_id}"])
         def unblock_handler():
             unblock_user(session._parent.client, user_id)
-            user_updated.set(True)
+            trigger_update_users.set(not trigger_update_users())
 
     @reactive.effect
     @reactive.event(input.create_user)
@@ -146,4 +144,4 @@ def users_server(input, output, session, users_button):
                 )
                 ui.modal_show(modal)
 
-            user_updated.set(True)
+            trigger_update_users.set(True)

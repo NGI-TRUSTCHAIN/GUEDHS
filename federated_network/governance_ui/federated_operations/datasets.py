@@ -121,3 +121,17 @@ def get_dataset_info(client, dataset_id):
     )
 
     return dataset_info
+
+
+def get_datasets_names(client):
+    datasets = client.datasets.get_all()
+
+    if len(datasets) == 0:
+        return []
+
+    data = {"": ""}
+    # data = {str(dataset.id): dataset.name for dataset in datasets}
+    for dataset in datasets:
+        data[str(dataset.id)] = dataset.name
+
+    return data
