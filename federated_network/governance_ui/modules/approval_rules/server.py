@@ -17,181 +17,109 @@ def approval_rules_server(input, output, session):
     trigger_update_pair_rules = reactive.Value(True)
     registered_handlers = set()
 
+    sections = {
+        "user_rules": {
+            "target": "user",
+            "fields": ["type", "user_id", "expires_at"],
+            "columns": ["Type", "User", "Expires At"],
+            "trigger": trigger_update_user_rules,
+            "get_rules_func": get_user_rules,
+        },
+        "dataset_rules": {
+            "target": "dataset",
+            "fields": ["type", "dataset_name", "expires_at"],
+            "columns": ["Type", "Dataset", "Expires At"],
+            "trigger": trigger_update_dataset_rules,
+            "get_rules_func": get_dataset_rules,
+        },
+        "pair_rules": {
+            "target": "pair",
+            "fields": ["type", "user_id", "dataset_name", "expires_at"],
+            "columns": ["Type", "User", "Dataset", "Expires At"],
+            "trigger": trigger_update_pair_rules,
+            "get_rules_func": get_pair_rules,
+        },
+    }
+
     @render.ui
     @reactive.event(trigger_update_user_rules)
     def user_rules_section():
-        user_rules = get_user_rules()
-
-        if user_rules == []:
-            return ui.div(
-                ui.h5("No user rules available.", class_="text-center my-4"),
-                class_="d-flex flex-column w-100 h-100 align-items-center",
-                style="background-color: #f3f4f6;",
-            )
-
-        sorted_rules = sorted(user_rules, key=lambda x: x["expires_at"])
-
-        table_row = []
-        for rule in sorted_rules:
-            delete_rule_button = ui.input_action_button(
-                f"delete_user_rule_{rule['index']}",
-                trash_icon,
-                class_="custom-button",
-            )
-
-            table_row.append(
-                ui.tags.tr(
-                    ui.tags.td(rule["type"]),
-                    ui.tags.td(rule["user_id"]),
-                    ui.tags.td(rule["expires_at"]),
-                    ui.tags.td(delete_rule_button, style="text-align: right;"),
-                )
-            )
-
-            if rule["id"] not in registered_handlers:
-                handle_delete_user_rule(rule["index"], rule["id"])
-                registered_handlers.add(rule["id"])
-
-        return ui.div(
-            ui.tags.table(
-                ui.tags.thead(
-                    ui.tags.tr(
-                        ui.tags.th("Type"),
-                        ui.tags.th("User"),
-                        ui.tags.th("Expires At"),
-                        ui.tags.th(""),
-                    )
-                ),
-                ui.tags.tbody(*table_row),
-                class_="rules-table",
-            ),
-            class_="d-flex flex-column w-100 mh-75 overflow-auto align-items-center",
+        return handle_rule_section(
+            sections["user_rules"]["target"],
+            sections["user_rules"]["fields"],
+            sections["user_rules"]["columns"],
+            sections["user_rules"]["trigger"],
+            sections["user_rules"]["get_rules_func"],
         )
-
-    def handle_delete_user_rule(index, rule_id):
-        @reactive.effect
-        @reactive.event(input[f"delete_user_rule_{index}"])
-        def delete_user_rule():
-            delete_rule(rule_id)
-            trigger_update_user_rules.set(not trigger_update_user_rules())
 
     @render.ui
     @reactive.event(trigger_update_dataset_rules)
     def dataset_rules_section():
-        dataset_rules = get_dataset_rules(session._parent.client)
-
-        if dataset_rules == []:
-            return ui.div(
-                ui.h5("No dataset rules available.", class_="text-center my-4"),
-                class_="d-flex flex-column w-100 h-100 align-items-center",
-                style="background-color: #f3f4f6;",
-            )
-
-        sorted_rules = sorted(dataset_rules, key=lambda x: x["expires_at"])
-
-        table_row = []
-        for rule in sorted_rules:
-            delete_rule_button = ui.input_action_button(
-                f"delete_dataset_rule_{rule['index']}",
-                trash_icon,
-                class_="custom-button",
-            )
-
-            table_row.append(
-                ui.tags.tr(
-                    ui.tags.td(rule["type"]),
-                    ui.tags.td(rule["dataset_name"]),
-                    ui.tags.td(rule["expires_at"]),
-                    ui.tags.td(delete_rule_button, style="text-align: right;"),
-                )
-            )
-
-            if rule["id"] not in registered_handlers:
-                handle_delete_dataset_rule(rule["index"], rule["id"])
-                registered_handlers.add(rule["id"])
-
-        return ui.div(
-            ui.tags.table(
-                ui.tags.thead(
-                    ui.tags.tr(
-                        ui.tags.th("Type"),
-                        ui.tags.th("Dataset"),
-                        ui.tags.th("Expires At"),
-                        ui.tags.th(""),
-                    )
-                ),
-                ui.tags.tbody(*table_row),
-                class_="rules-table",
-            ),
-            class_="d-flex flex-column w-100 mh-75 overflow-auto align-items-center",
+        return handle_rule_section(
+            sections["dataset_rules"]["target"],
+            sections["dataset_rules"]["fields"],
+            sections["dataset_rules"]["columns"],
+            sections["dataset_rules"]["trigger"],
+            sections["dataset_rules"]["get_rules_func"],
         )
-
-    def handle_delete_dataset_rule(index, rule_id):
-        @reactive.effect
-        @reactive.event(input[f"delete_dataset_rule_{index}"])
-        def delete_dataset_rule():
-            delete_rule(rule_id)
-            trigger_update_dataset_rules.set(not trigger_update_dataset_rules())
 
     @render.ui
     @reactive.event(trigger_update_pair_rules)
     def pair_rules_section():
-        pair_rules = get_pair_rules(session._parent.client)
+        return handle_rule_section(
+            sections["pair_rules"]["target"],
+            sections["pair_rules"]["fields"],
+            sections["pair_rules"]["columns"],
+            sections["pair_rules"]["trigger"],
+            sections["pair_rules"]["get_rules_func"],
+        )
 
-        if pair_rules == []:
+    def handle_rule_section(target, fields, columns, trigger, get_rules_func):
+        rules = get_rules_func(session._parent.client)
+
+        if rules == []:
             return ui.div(
-                ui.h5("No pair rules available.", class_="text-center my-4"),
+                ui.h5(f"No {target} rules available.", class_="text-center my-4"),
                 class_="d-flex flex-column w-100 h-100 align-items-center",
                 style="background-color: #f3f4f6;",
             )
 
-        sorted_rules = sorted(pair_rules, key=lambda x: x["expires_at"])
+        sorted_rules = sorted(rules, key=lambda x: x["expires_at"])
 
         table_row = []
         for rule in sorted_rules:
             delete_rule_button = ui.input_action_button(
-                f"delete_pair_rule_{rule['index']}",
+                f"delete_{target}_rule_{rule['index']}",
                 trash_icon,
                 class_="custom-button",
             )
 
             table_row.append(
                 ui.tags.tr(
-                    ui.tags.td(rule["type"]),
-                    ui.tags.td(rule["user_id"]),
-                    ui.tags.td(rule["dataset_name"]),
-                    ui.tags.td(rule["expires_at"]),
+                    *[ui.tags.td(rule[field]) for field in fields],
                     ui.tags.td(delete_rule_button, style="text-align: right;"),
                 )
             )
 
             if rule["id"] not in registered_handlers:
-                handle_delete_pair_rule(rule["index"], rule["id"])
+                handle_delete_rule(target, rule["index"], rule["id"], trigger)
                 registered_handlers.add(rule["id"])
 
         return ui.div(
             ui.tags.table(
-                ui.tags.thead(
-                    ui.tags.tr(
-                        ui.tags.th("Type"),
-                        ui.tags.th("User"),
-                        ui.tags.th("Dataset"),
-                        ui.tags.th("Expires At"),
-                        ui.tags.th(""),
-                    )
-                ),
+                ui.tags.thead(ui.tags.tr(*[ui.tags.th(column) for column in columns])),
                 ui.tags.tbody(*table_row),
                 class_="rules-table",
             ),
             class_="d-flex flex-column w-100 mh-75 overflow-auto align-items-center",
         )
 
-    def handle_delete_pair_rule(index, rule_id):
+    def handle_delete_rule(target, index, rule_id, trigger):
         @reactive.effect
-        @reactive.event(input[f"delete_pair_rule_{index}"])
-        def delete_pair_rule():
+        @reactive.event(input[f"delete_{target}_rule_{index}"])
+        def delete_rule_handler():
             delete_rule(rule_id)
-            trigger_update_pair_rules.set(not trigger_update_pair_rules())
+            trigger.set(not trigger())
 
     @reactive.effect
     @reactive.event(input.add_rule_button)
