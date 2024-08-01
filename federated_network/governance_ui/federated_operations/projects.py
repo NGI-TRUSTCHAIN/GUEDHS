@@ -104,11 +104,11 @@ def execute_code(client, project_id, request_index):
     input_keys = func.input_kwargs
     users_function = func.unsafe_function
 
-    kwargs = {input_keys[i]: asset.mock for i, asset in enumerate(assets)}
-    mock_result = users_function(**kwargs)
+    kwargs1 = {input_keys[i]: asset.mock for i, asset in enumerate(assets)}
+    mock_result = users_function(**kwargs1)
 
-    kwargs = {input_keys[i]: asset.data for i, asset in enumerate(assets)}
-    real_result = users_function(**kwargs)
+    kwargs2 = {input_keys[i]: asset.data for i, asset in enumerate(assets)}
+    real_result = users_function(**kwargs2)
 
     return mock_result, real_result
 
