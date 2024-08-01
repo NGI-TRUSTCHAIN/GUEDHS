@@ -16,3 +16,11 @@ model User {
     pysyft_pwd String
     createdAt  DateTime @default(now())
 }
+
+model Rule {
+    id         String   @id @default(uuid())
+    type       String
+    user_id    String?
+    dataset_id String?
+    expires_at DateTime
+}

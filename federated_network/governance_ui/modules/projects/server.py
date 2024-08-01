@@ -70,6 +70,8 @@ def projects_server(input, output, session, projects_button):
 
         table_rows = []
         for project in sorted_projects:
+            short_name = project["name"][:25] + "..." if len(project["name"]) > 25 else project["name"]
+
             short_description = (
                 project["description"][:30] + "..." if len(project["description"]) > 30 else project["description"]
             )
@@ -89,7 +91,7 @@ def projects_server(input, output, session, projects_button):
 
             table_rows.append(
                 ui.tags.tr(
-                    ui.tags.td(project["name"]),
+                    ui.tags.td(short_name),
                     ui.tags.td(short_description),
                     ui.tags.td(formatted_date),
                     ui.tags.td(project["created_by"]),
