@@ -6,7 +6,7 @@ db = Prisma()
 db.connect()
 
 
-def get_user_rules():
+def get_user_rules(client):
     rules = db.rule.find_many(where={"dataset_id": None})
 
     data = []
