@@ -4,6 +4,7 @@ from governance_ui.federated_operations.approval_rules import (
     get_dataset_rules,
     get_pair_rules,
     delete_rule,
+    apply_rules,
     add_rule,
 )
 from governance_ui.federated_operations.datasets import get_datasets_names
@@ -122,6 +123,16 @@ def approval_rules_server(input, output, session):
             trigger.set(not trigger())
 
     @reactive.effect
+    @reactive.event(input.apply_rules_button)
+    def handle_apply_rules():
+        results = apply_rules(session._parent.client)
+        ui.notification_show(
+            f"Rules applied successfully! {results['approved']} requests approved,\
+            {results['rejected']} requests rejected and {results['pending']} requests pending.",
+            type="success",
+        )
+
+    @reactive.effect
     @reactive.event(input.add_rule_button)
     def add_rule_modal():
         datasets = get_datasets_names(session._parent.client)
@@ -175,4 +186,5 @@ def approval_rules_server(input, output, session):
             ui.notification_show(str(e), type="error")
             return
 
+        ui.notification_show("Rule added successfully!", type="success")
         ui.modal_remove()
