@@ -19,7 +19,6 @@ def users_server(input, output, session, users_button):
     @render.ui
     @reactive.event(users_button, trigger_update_users)
     def list_users_page():
-        print("list_users_page")
         users.set(get_users(session._parent.client))
 
         if len(users()) > 0:
