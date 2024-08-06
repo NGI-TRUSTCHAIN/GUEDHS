@@ -1,7 +1,8 @@
 from prisma import Prisma
 import syft as sy
 from datetime import datetime
-from governance_ui.federated_operations.projects import execute_code, approve_request, reject_request
+from governance_ui.actions import PySyftActions
+from governance_ui.logs import logger
 
 db = Prisma()
 db.connect()
@@ -97,48 +98,69 @@ def add_rule(client, user_id, dataset_id, rule_type, expires_date):
     )
 
 
-def apply_rules(client):
-    projects = client.projects.get_all()
-    datasets = {dataset.asset_list[0].id: str(dataset.id) for dataset in client.datasets.get_all()}
-    results = {
-        "approved": 0,
-        "rejected": 0,
-        "pending": 0,
-    }
+def apply_rules_on_requests(client):
+    datasets = {}
+    logger.info("Listing datasets", client=client, action=PySyftActions.LIST_DATASETS.value)
+    for dataset in client.datasets.get_all():
+        logger.info(
+            "Inspecting dataset",
+            client=client,
+            action=PySyftActions.INSPECT_DATASET.value,
+            dataset_id=dataset.id,
+        )
+        datasets[dataset.asset_list[0].id] = (str(dataset.id), dataset.name)
 
-    for project in projects:
-        print("Checking project:", project.name)
-
+    request_decisions = {}
+    logger.info(
+        "Listing access requests",
+        client=client,
+        action=PySyftActions.LIST_ACCESS_REQUESTS.value,
+    )
+    for project in client.projects.get_all():
         if not project.pending_requests:
-            print("No pending requests for project:", project.name)
             continue
 
-        project_id = project.id
         for request_index, request in enumerate(project.requests):
             user_id = request.requesting_user_email
-            func = request.code
-
             approve_set = set()
-            for asset in func.assets:
-                dataset_id = datasets[asset.id]
+            request_dataset_names = []
+            datasets_ids = []
+            for asset in request.code.assets:
+                dataset_id = datasets[asset.id][0]
+                datasets_ids.append(dataset_id)
+                request_dataset_names.append(datasets[asset.id][1])
                 rule = check_rule(user_id, dataset_id)
                 approve_set.add(rule) if rule is not None else None
 
-            if len(approve_set) == 1:
-                if True in approve_set:
-                    print("Will approve request!")
-                    _, real_result = execute_code(client, project_id, request_index)
-                    approve_request(client, project_id, request_index, real_result)
-                    results["approved"] += 1
-                else:
-                    print("Will reject request!")
-                    reject_request(client, project_id, request_index, "Rejected by rule!")
-                    results["rejected"] += 1
-            else:
-                print("Inconsistent rules found, let supervisor decide!")
-                results["pending"] += 1
+            logger.info(
+                "Inspecting access request",
+                client=client,
+                action=PySyftActions.INSPECT_ACCESS_REQUEST.value,
+                user_id=request.requesting_user_email,
+                dataset_id=", ".join(datasets_ids),
+                status=request.status.name,
+                request_access_id=str(request.id),
+            )
 
-    return results
+            decision = {
+                "project_id": project.id,
+                "project_name": project.name,
+                "request_id": request.id,
+                "request_index": request_index,
+                "description": "Request to approve " + request.code.service_func_name,
+                "request_time": request.request_time,
+                "requesting_user_name": request.requesting_user_name,
+                "requesting_user_email": request.requesting_user_email,
+                "function_code": request.code.raw_code,
+                "dataset_names": request_dataset_names,
+                "auto_decision": "pending",
+            }
+
+            if len(approve_set) == 1:
+                decision["auto_decision"] = "approve" if True in approve_set else "reject"
+            request_decisions[request.id] = decision
+
+    return request_decisions
 
 
 def check_rule(user_id, dataset_id):

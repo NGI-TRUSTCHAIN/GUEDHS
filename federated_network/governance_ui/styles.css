@@ -122,10 +122,15 @@
 }
 
 .accordion {
-    --bs-accordion-bg: #e5e7eb;
-    --bs-accordion-border-color: #d1d5db;
+    /* --bs-accordion-bg: #e5e7eb;
+    --bs-accordion-border-color: #d1d5db; */
     --bs-accordion-border-width: 1px;
     --bs-accordion-border-radius: 6px;
+}
+
+.approval-accordion {
+    --bs-accordion-bg: #e5e7eb;
+    --bs-accordion-border-color: #d1d5db;
 }
 
 .accordion-body {
@@ -134,4 +139,11 @@
 
 .accordion-title {
     font-size: 18px;
+}
+
+#shiny-modal {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
 }
