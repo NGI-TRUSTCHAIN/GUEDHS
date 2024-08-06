@@ -5,12 +5,12 @@ from governance_ui.federated_operations.utils import override_input
 
 
 def get_projects(client):
-    projects = client.projects.get_all()
     logger.info(
         "Listing access requests",
         client=client,
         action=PySyftActions.LIST_ACCESS_REQUESTS.value,
     )
+    projects = client.projects.get_all()
 
     if len(projects) == 0:
         return []
@@ -56,12 +56,27 @@ def get_request_by_project_id(client, project_id, request_index):
 
 
 def get_request(client, request, request_index):
+    asset_ids = []
+    datasets = {}
+    for asset in request.code.assets:
+        asset_id = str(asset.id)
+        asset_ids.append(asset_id)
+        datasets[asset_id] = {
+            "id": asset_id,
+            "name": asset.name,
+            "uploader_name": asset.uploader.name,
+            "uploader_email": asset.uploader.email,
+            "created_at": asset.created_at,
+            "mock_data": pd.DataFrame(asset.mock[:8], dtype=str),
+            "private_data": pd.DataFrame(asset.data[:8], dtype=str),
+        }
+
     logger.info(
         "Inspecting access request",
         client=client,
         action=PySyftActions.INSPECT_ACCESS_REQUEST.value,
         user_id=request.requesting_user_email,
-        dataset_id=str(request.code.assets[0].id),  # FIX: Assuming only one dataset
+        dataset_id=", ".join(asset_ids),
         status=request.status.name,
         request_access_id=str(request.id),
     )
@@ -76,19 +91,7 @@ def get_request(client, request, request_index):
         "status": request.status.name,
         "function_name": request.code.service_func_name,
         "function_code": request.code.raw_code,
-        "datasets": {
-            str(asset.id): {
-                "id": str(asset.id),
-                "name": asset.name,
-                # "asset_description": asset.description,
-                "uploader_name": asset.uploader.name,
-                "uploader_email": asset.uploader.email,
-                "created_at": asset.created_at,
-                "mock_data": pd.DataFrame(asset.mock[:8], dtype=str),
-                "private_data": pd.DataFrame(asset.data[:8], dtype=str),
-            }
-            for asset in request.code.assets
-        },
+        "datasets": datasets,
     }
 
 
@@ -131,6 +134,15 @@ def approve_request(client, project_id, request_index, real_result):
     override_input(request.accept_by_depositing_result, real_result, force=True)
 
 
+def approve_multiple_requests(client, input_data):
+    for data in input_data:
+        project_id = data["project_id"]
+        request_index = data["request_index"]
+
+        _, real_result = execute_code(client, project_id, request_index)
+        approve_request(client, project_id, request_index, real_result)
+
+
 def reject_request(client, project_id, request_index, reason):
     project = client.projects.get_by_uid(project_id)
     request = project.requests[request_index]
@@ -147,3 +159,12 @@ def reject_request(client, project_id, request_index, reason):
 
     # request.deny(reason=reason)
     override_input(request.deny, reason=reason)
+
+
+def reject_multiple_requests(client, input_data):
+    for data in input_data:
+        project_id = data["project_id"]
+        request_index = data["request_index"]
+        reason = data["reason"]
+
+        reject_request(client, project_id, request_index, reason)
