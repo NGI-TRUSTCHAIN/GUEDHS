@@ -1,5 +1,5 @@
 from shiny import module, render, ui, reactive
-from governance_ui.federated_operations.approval_rules import (
+from governance_ui.federated_operations.access_rules import (
     get_user_rules,
     get_dataset_rules,
     get_pair_rules,
@@ -24,17 +24,18 @@ from datetime import datetime
 
 
 @module.server
-def approval_rules_server(input, output, session):
-    trigger_apply_decisions = reactive.Value(False)
+def access_rules_server(input, output, session):
+    show_apply_decisions_page = reactive.Value(False)
     open_accordions = reactive.Value([])
     trigger_update_rules = reactive.Value(True)
     registered_handlers = set()
-    request_decisions = reactive.Value([])
-    final_decisions = {}
-    trigger_decision_button = reactive.Value(False)
+    request_decisions = reactive.Value(None)
+    final_decisions = reactive.Value({})
+    trigger_change_decisions = reactive.Value(False)
     current_request_id = reactive.Value(None)
-    approve_requests = reactive.Value({})
-    reject_requests = reactive.Value({})
+    final_approve_requests = reactive.Value({})
+    final_reject_requests = reactive.Value({})
+    toggle_inspect_modal = reactive.Value(False)
 
     sections = {
         "user_rules": {
@@ -58,16 +59,16 @@ def approval_rules_server(input, output, session):
     }
 
     @render.ui
-    @reactive.event(trigger_apply_decisions)
-    def approval_rules_main():
-        if trigger_apply_decisions():
+    @reactive.event(show_apply_decisions_page)
+    def access_rules_main():
+        if show_apply_decisions_page():
             return ui.output_ui("apply_decisions_output")
         else:
-            return ui.output_ui("approval_rules_page")
+            return ui.output_ui("access_rules_page")
 
     @render.ui
     @reactive.event(trigger_update_rules)
-    def approval_rules_page():
+    def access_rules_page():
         items = [make_rules_accordion_panel(section) for section in sections]
 
         return (
@@ -157,7 +158,7 @@ def approval_rules_server(input, output, session):
         @reactive.effect
         @reactive.event(input[f"delete_{target}_rule_{index}"])
         def delete_rule_handler():
-            delete_rule(rule_id)
+            delete_rule(session._parent.client, rule_id)
             trigger_update_rules.set(not trigger_update_rules())
 
     @reactive.effect
@@ -216,21 +217,22 @@ def approval_rules_server(input, output, session):
     @reactive.event(input.apply_rules_button)
     def apply_rules_on_requests_handler():
         request_decisions.set(apply_rules_on_requests(session._parent.client))
-        trigger_apply_decisions.set(True)
+        show_apply_decisions_page.set(True)
 
     @render.ui
-    @reactive.event(trigger_decision_button, trigger_apply_decisions)
+    @reactive.event(trigger_change_decisions, show_apply_decisions_page)
     def apply_decisions_output():
         approve_requests = []
         reject_requests = []
         pending_requests = []
-        for request in request_decisions().values():
-            if request["auto_decision"] == "approve":
-                approve_requests.append(request)
-            elif request["auto_decision"] == "reject":
-                reject_requests.append(request)
-            else:
-                pending_requests.append(request)
+        if request_decisions() is not None:
+            for request in request_decisions().values():
+                if request["auto_decision"] == "approve":
+                    approve_requests.append(request)
+                elif request["auto_decision"] == "reject":
+                    reject_requests.append(request)
+                else:
+                    pending_requests.append(request)
 
         return ui.div(
             ui.input_action_button(
@@ -266,10 +268,11 @@ def approval_rules_server(input, output, session):
     @reactive.effect
     @reactive.event(input.back_button)
     def back_button_handler():
-        trigger_apply_decisions.set(False)
-        request_decisions.set([])
-        approve_requests.set({})
-        reject_requests.set({})
+        show_apply_decisions_page.set(False)
+        request_decisions.set(None)
+        final_decisions.set({})
+        final_approve_requests.set({})
+        final_reject_requests.set({})
 
     def make_decision_accordion_panel(decision, requests):
         return ui.accordion_panel(decision.capitalize(), handle_decision_section(decision, requests))
@@ -294,10 +297,10 @@ def approval_rules_server(input, output, session):
                 class_="btn btn-primary btn-sm",
             )
 
-            if request["request_id"] not in final_decisions:
-                final_decisions[request["request_id"]] = "pending"
+            if request["request_id"] not in final_decisions():
+                final_decisions()[request["request_id"]] = "pending"
 
-            current_decision = final_decisions[request["request_id"]]
+            current_decision = final_decisions()[request["request_id"]]
             approve_button = ui.input_action_button(
                 f"approve_button_{request['request_id']}",
                 check_icon if current_decision != "approve" else check_icon_green,
@@ -349,9 +352,10 @@ def approval_rules_server(input, output, session):
         @reactive.event(input[f"inspect_request_{request_id}"])
         def inspect_request_handler():
             current_request_id.set(request_id)
+            toggle_inspect_modal.set(not toggle_inspect_modal())
 
     @reactive.effect
-    @reactive.event(current_request_id)
+    @reactive.event(toggle_inspect_modal, current_request_id, ignore_init=True)
     def show_inspect_modal():
         current_request = request_decisions()[current_request_id()]
 
@@ -408,17 +412,17 @@ def approval_rules_server(input, output, session):
         @reactive.effect
         @reactive.event(input[f"approve_button_{request_id}"])
         def approve_button_handler():
-            final_decisions[request_id] = "approve" if final_decisions[request_id] != "approve" else "pending"
+            final_decisions()[request_id] = "approve" if final_decisions()[request_id] != "approve" else "pending"
 
-            trigger_decision_button.set(not trigger_decision_button())
+            trigger_change_decisions.set(not trigger_change_decisions())
 
     def handle_reject_button(request_id):
         @reactive.effect
         @reactive.event(input[f"reject_button_{request_id}"])
         def reject_button_handler():
-            final_decisions[request_id] = "reject" if final_decisions[request_id] != "reject" else "pending"
+            final_decisions()[request_id] = "reject" if final_decisions()[request_id] != "reject" else "pending"
 
-            trigger_decision_button.set(not trigger_decision_button())
+            trigger_change_decisions.set(not trigger_change_decisions())
 
     @reactive.effect
     @reactive.event(input.apply_decisions_button)
@@ -429,7 +433,7 @@ def approval_rules_server(input, output, session):
         items = []
         for request in request_decisions().values():
             request_id = request["request_id"]
-            decision = final_decisions[request_id]
+            decision = final_decisions()[request_id]
 
             if decision == "approve":
                 temp_approve_requests[request_id] = {
@@ -455,8 +459,8 @@ def approval_rules_server(input, output, session):
                 )
             )
 
-        approve_requests.set(temp_approve_requests)
-        reject_requests.set(temp_reject_requests)
+        final_approve_requests.set(temp_approve_requests)
+        final_reject_requests.set(temp_reject_requests)
 
         modal = ui.modal(
             ui.div(
@@ -480,10 +484,10 @@ def approval_rules_server(input, output, session):
     @reactive.effect
     @reactive.event(input.confirm_apply_decisions)
     def confirm_apply_decisions():
-        approve_multiple_requests(session._parent.client, approve_requests().values())
-        reject_multiple_requests(session._parent.client, reject_requests().values())
+        approve_multiple_requests(session._parent.client, final_approve_requests().values())
+        reject_multiple_requests(session._parent.client, final_reject_requests().values())
 
-        trigger_apply_decisions.set(False)
+        show_apply_decisions_page.set(False)
         ui.modal_remove()
         ui.notification_show("Decisions were successfully applied.", type="success")
 

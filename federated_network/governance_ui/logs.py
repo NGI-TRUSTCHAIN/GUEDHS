@@ -22,6 +22,7 @@ def transform_to_api_format(event_dict):
         "status": "status",
         "user_id": "dataUserId",
         "dataset_id": "datasetId",
+        "rule_id": "dataOpId",
     }
     return {key_transformer.get(key, key): str(value) for key, value in event_dict.items() if key in key_transformer}
 

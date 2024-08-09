@@ -2,7 +2,7 @@ from governance_ui.modules.datasets import datasets_ui, register_dataset_ui
 from governance_ui.modules.projects import projects_ui
 from governance_ui.modules.users import list_users_ui, create_user_ui
 from governance_ui.modules.audit_logs import audit_logs_ui
-from governance_ui.modules.approval_rules import approval_rules_ui
+from governance_ui.modules.access_rules import access_rules_ui
 from governance_ui.icons import (
     database_icon,
     database_add_icon,
@@ -10,7 +10,7 @@ from governance_ui.icons import (
     user_icon,
     add_user_icon,
     history_icon,
-    approval_icon,
+    access_rules_icon,
 )
 
 
@@ -33,11 +33,11 @@ sections = {
         "button_text": "Projects",
         "ui": projects_ui("projects"),
     },
-    "approval_rules": {
-        "button_id": "approval_rules_button",
-        "icon": approval_icon,
-        "button_text": "Approval Rules",
-        "ui": approval_rules_ui("approval_rules"),
+    "access_rules": {
+        "button_id": "access_rules_button",
+        "icon": access_rules_icon,
+        "button_text": "Access Rules",
+        "ui": access_rules_ui("access_rules"),
     },
     "users": {
         "button_id": "list_users_button",
