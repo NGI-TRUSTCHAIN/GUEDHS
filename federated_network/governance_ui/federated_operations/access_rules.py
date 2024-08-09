@@ -3,12 +3,19 @@ import syft as sy
 from datetime import datetime
 from governance_ui.actions import PySyftActions
 from governance_ui.logs import logger
+import uuid
 
 db = Prisma()
 db.connect()
 
 
 def get_user_rules(client):
+    logger.info(
+        "Listing data operation rules",
+        client=client,
+        action=PySyftActions.LIST_DATA_OP_RULES.value,
+    )
+
     rules = db.rule.find_many(where={"dataset_id": None})
 
     data = []
@@ -27,6 +34,12 @@ def get_user_rules(client):
 
 
 def get_dataset_rules(client):
+    logger.info(
+        "Listing data operation rules",
+        client=client,
+        action=PySyftActions.LIST_DATA_OP_RULES.value,
+    )
+
     rules = db.rule.find_many(where={"user_id": None})
 
     data = []
@@ -46,6 +59,12 @@ def get_dataset_rules(client):
 
 
 def get_pair_rules(client):
+    logger.info(
+        "Listing data operation rules",
+        client=client,
+        action=PySyftActions.LIST_DATA_OP_RULES.value,
+    )
+
     rules = db.rule.find_many(where={"NOT": [{"user_id": None}, {"dataset_id": None}]})
 
     data = []
@@ -65,13 +84,28 @@ def get_pair_rules(client):
     return data
 
 
-def delete_rule(rule_id):
+def delete_rule(client, rule_id):
+    logger.info(
+        "Removing data operation rule",
+        client=client,
+        action=PySyftActions.DELETE_DATA_OP_RULE.value,
+        rule_id=rule_id,
+    )
+
     db.rule.delete(where={"id": rule_id})
 
 
 def add_rule(client, user_id, dataset_id, rule_type, expires_date):
-    expires_at = datetime(expires_date.year, expires_date.month, expires_date.day)
+    rule_id = str(uuid.uuid4())
 
+    logger.info(
+        "Creating data operation rule",
+        client=client,
+        action=PySyftActions.CREATE_DATA_OP_RULE.value,
+        rule_id=rule_id,
+    )
+
+    expires_at = datetime(expires_date.year, expires_date.month, expires_date.day)
     if expires_at < datetime.now():
         raise ValueError("Invalid expiration date!")
 
@@ -90,6 +124,7 @@ def add_rule(client, user_id, dataset_id, rule_type, expires_date):
 
     db.rule.create(
         data={
+            "id": rule_id,
             "type": rule_type,
             "user_id": user_id,
             "dataset_id": dataset_id,
