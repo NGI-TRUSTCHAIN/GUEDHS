@@ -6,7 +6,7 @@ from governance_ui.modules.datasets import datasets_server
 from governance_ui.modules.projects import projects_server
 from governance_ui.modules.users import users_server
 from governance_ui.modules.audit_logs import audit_logs_server
-from governance_ui.modules.approval_rules import approval_rules_server
+from governance_ui.modules.access_rules import access_rules_server
 from governance_ui.icons import logout_icon
 
 dashboards_ui = ui.page_sidebar(
@@ -99,7 +99,7 @@ def server(input, output, session):
 
     projects_server("projects", projects_button=input.projects_button)
 
-    approval_rules_server("approval_rules")
+    access_rules_server("access_rules")
 
     users_server("users", users_button=input.list_users_button)
 
