@@ -1,0 +1,78 @@
+{
+    "variables": {
+      "defaultTenantId": "d7d09513-a3f5-401c-9685-34ab6c552453",
+      "adminEmail": "admin@example.com",
+      "adminPassword": "password",
+      "guehdsAppId": "342e4b04-e076-4496-90b5-d7953b279178"
+    },
+    "apiKeys": [
+      {
+        "key": "bf69486b-4733-4470-a592-f1bfce7af580",
+        "description": "Standard development API key"
+      }
+    ],
+    "requests": [
+      {
+        "method": "POST",
+        "url": "/api/application/#{guehdsAppId}",
+        "tenantId": "#{defaultTenantId}",
+        "body": {
+          "application": {
+            "name": "GUEHDS",
+            "jwtConfiguration": {
+              "enabled": true
+            },
+            "oauthConfiguration": {
+              "clientSecret": "secret",
+              "authorizedRedirectURLs": [
+                "http://guehds.local.promptly.health/auth"
+              ],
+              "logoutURL": "http://guehds.local.promptly.health/logout",
+              "enabledGrants": [
+                "authorization_code",
+                "refresh_token"
+              ],
+              "requireRegistration": true
+            }
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "url": "/api/user/registration/00000000-0000-0000-0000-000000000001",
+        "body": {
+          "user": {
+            "birthDate": "1981-06-04",
+            "email": "#{adminEmail}",
+            "firstName": "Admin",
+            "lastName": "User",
+            "password": "#{adminPassword}"
+          },
+          "registration": {
+            "applicationId": "#{FUSIONAUTH_APPLICATION_ID}",
+            "roles": [
+              "admin"
+            ]
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "url": "/api/user/registration/00000000-0000-0000-0000-000000000002",
+        "body": {
+          "user": {
+            "birthDate": "1981-06-04",
+            "email": "info@openmined.org",
+            "username": "info@openmined.org",
+            "firstName": "Open",
+            "lastName": "Mined",
+            "password": "changethis"
+          },
+          "registration": {
+            "applicationId": "#{guehdsAppId}"
+          }
+        }
+      }
+    ]
+  }
+  
