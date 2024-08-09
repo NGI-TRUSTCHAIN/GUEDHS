@@ -23,7 +23,43 @@ poetry install
 
 ### Project Setup
 
-1. Start the Docker Containers
+**Note:** Run all commands from the `federated_network` directory.
+
+1. Create a `.env` file in the root of the project with the following content, by copying the `.env.example` file:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+2. Setup `/etc/hosts`:
+
+    Add the following entries to your `/etc/hosts` file:
+
+    ```
+    127.0.0.1   auth.local.promptly.health
+    127.0.0.1   guehds.local.promptly.health
+    127.0.0.1   syft.local.promptly.health
+    127.0.0.1   blockchain.local.promptly.health
+    ```
+
+3. To start the PyGrid domain network, run the following command:
+
+    ```bash
+    hagrid launch domain
+    ```
+
+    This will launch a PyGrid domain at `http://syft.local.promptly.health`.
+
+4. Start the Blockchain Service
+
+    To start the blockchain service, run the following command:
+
+    ```bash
+    cd ../blockchain-api
+    docker compose up -d
+    ```
+
+5. Start the Docker Containers
 
     To set up and start the necessary services, run the following command:
 
@@ -31,28 +67,21 @@ poetry install
     docker compose up -d
     ```
 
-2. Populate the database:
+### Interacting as a Data Owner
 
-    Once the Docker containers are up and running, populate the database with initial data by executing the following script:
+To interact with the portal as a Data Owner, access the portal at `http://guehds.local.promptly.health` and login with the following credentials:
 
-    ```bash
-    python governance_ui/db/populate_db.py
-    ```
+- **Username**: `info@openmined.org`
+- **Password**: `changethis`
 
-### Network Setup
+### Interacting as a Data Scientist
 
-1. To start the PyGrid domain network, run the following command:
-
-    ```bash
-    hagrid launch domain
-    ```
-
-    This will launch a PyGrid domain at `http://localhost:8081`.
+Explore and interact with the federated network as a Data Scientist by following the examples available in the [notebooks](./notebooks) directory.
 
 
-## Usage
+## Local Setup - Development
 
-### GUEHDS Portal
+For local development, you can run the GUEHDS Portal locally, the rest of the services will be running in Docker containers.
 
 To start the GUEHDS Portal web app, use:
 
@@ -61,8 +90,3 @@ uvicorn governance_ui.app:app
 ```
 
 The web app will be accessible at `http://guehds.local.promptly.health`.
-
-### Interacting as a Data Scientist
-
-Explore and interact with the federated network as a Data Scientist by following the examples available in the [notebooks](./notebooks) directory.
-
