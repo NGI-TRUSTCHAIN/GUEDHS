@@ -1,65 +1,68 @@
 # GUEHDS Federated Network
 
-Example federated network for the GUEHDS project. Built using [PySyft](https://github.com/OpenMined/PySyft).
+GUEHDS is a portal for managing and interacting with a Federated Network powered by [PySyft](https://github.com/OpenMined/PySyft). The portal's user interface (UI) is built using [Shiny for Python](https://shiny.posit.co/py/).
+
 
 ## Installation
 
-First, install [Poetry](https://python-poetry.org/). Then install the project using:
+### Requirements:
+
+- [Docker](https://www.docker.com/)
+- [Poetry](https://python-poetry.org/)
+
+### Dependencies
+
+Install the project dependencies by running the following command:
 
 ```bash
 poetry install
 ```
 
-## Setup Database
 
-Navigate to the database directory:
+## Setup
 
-```bash
-cd governance_ui/db
-```
+### Project Setup
 
-Apply the migrations to the database:
+1. Start the Docker Containers
 
-```bash
-prisma migrate deploy
-```
+    To set up and start the necessary services, run the following command:
 
-Generate the Prisma Client:
+    ```bash
+    docker compose up -d
+    ```
 
-```bash
-prisma generate
-```
+2. Populate the database:
 
-Populate the database:
+    Once the Docker containers are up and running, populate the database with initial data by executing the following script:
 
-```bash
-python populate_db.py
-```
+    ```bash
+    python governance_ui/db/populate_db.py
+    ```
 
-## Setup Network
+### Network Setup
 
-Start the network using:
+1. To start the PyGrid domain network, run the following command:
 
-```bash
-hagrid launch gateway
-```
+    ```bash
+    hagrid launch domain
+    ```
 
-This will start a PyGrid gateway at `http://localhost:8081`.
+    This will launch a PyGrid domain at `http://localhost:8081`.
 
-Then, deploy domain nodes using:
-
-```bash
-hagrid launch domain
-```
-
-This will start a PyGrid domain node at `http://localhost:8082`. If you wish, repeat this command to start more domain nodes.
 
 ## Usage
 
-Follow the examples in the [notebooks](./notebooks) directory to see how to interact with the network.
+### GUEHDS Portal
 
-You can also start the example webapp using:
+To start the GUEHDS Portal web app, use:
 
 ```bash
 uvicorn governance_ui.app:app
 ```
+
+The web app will be accessible at `http://guehds.local.promptly.health`.
+
+### Interacting as a Data Scientist
+
+Explore and interact with the federated network as a Data Scientist by following the examples available in the [notebooks](./notebooks) directory.
+
