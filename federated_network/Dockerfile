@@ -31,6 +31,8 @@ RUN prisma generate --schema=./governance_ui/db/schema.prisma
 
 # Copy our code
 COPY ./governance_ui ./governance_ui
+COPY ./entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 # Tell docker to run shiny when the image boots
-CMD uvicorn governance_ui.app:app --host 0.0.0.0
+ENTRYPOINT [ "./entrypoint.sh" ]

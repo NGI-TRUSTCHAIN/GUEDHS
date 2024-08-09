@@ -5,10 +5,10 @@ def populate_db():
     db = Prisma()
     db.connect()
 
-    db.user.create(data={"name": "info", "email": "info@openmined.org", "pysyft_pwd": "changethis"})
+    user = db.user.find_many()
 
-    # user = db.user.find_many()
-    # print(user)
+    if not user:
+        db.user.create(data={"name": "info", "email": "info@openmined.org", "pysyft_pwd": "changethis"})
 
     db.disconnect()
 
