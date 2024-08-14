@@ -8,6 +8,7 @@ def populate_db():
     user = db.user.find_many()
 
     if not user:
+        print("Populating db with default user")
         db.user.create(data={"name": "info", "email": "info@openmined.org", "pysyft_pwd": "changethis"})
 
     db.disconnect()
