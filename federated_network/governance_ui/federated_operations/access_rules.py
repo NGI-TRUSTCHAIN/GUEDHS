@@ -165,7 +165,10 @@ def apply_rules_on_requests(client):
                 datasets_ids.append(dataset_id)
                 request_dataset_names.append(datasets[asset.id][1])
                 rule = check_rule(user_id, dataset_id)
-                approve_set.add(rule) if rule is not None else None
+                if rule is None:
+                    approve_set.clear()
+                    break
+                approve_set.add(rule)
 
             logger.info(
                 "Inspecting access request",
@@ -199,37 +202,46 @@ def apply_rules_on_requests(client):
 
 
 def check_rule(user_id, dataset_id):
-    reject_match = db.rule.find_first(
+    reject_match = db.rule.find_many(
         where={
             "OR": [
-                {"user_id": user_id, "dataset_id": dataset_id, "type": "reject"},
                 {"user_id": None, "dataset_id": dataset_id, "type": "reject"},
                 {"user_id": user_id, "dataset_id": None, "type": "reject"},
+                {"user_id": user_id, "dataset_id": dataset_id, "type": "reject"},
             ]
         }
     )
-    approve_match = db.rule.find_first(
+
+    reject_rule_score = 0
+    if len(reject_match) > 0:
+        for rule in reject_match:
+            reject_score = bool(rule.user_id) + bool(rule.dataset_id)
+            if reject_score > reject_rule_score:
+                reject_rule_score = reject_score
+
+    approve_match = db.rule.find_many(
         where={
             "OR": [
-                {"user_id": user_id, "dataset_id": dataset_id, "type": "approve"},
                 {"user_id": None, "dataset_id": dataset_id, "type": "approve"},
                 {"user_id": user_id, "dataset_id": None, "type": "approve"},
+                {"user_id": user_id, "dataset_id": dataset_id, "type": "approve"},
             ]
         }
     )
 
-    if not (approve_match or reject_match):
-        return None
+    approve_rule_score = 0
+    if len(approve_match) > 0:
+        for rule in approve_match:
+            approve_score = bool(rule.user_id) + bool(rule.dataset_id)
+            if approve_score > approve_rule_score:
+                approve_rule_score = approve_score
 
-    if not (approve_match and reject_match):
-        return bool(approve_match)
-
-    approve_match_score = bool(approve_match.user_id) + bool(approve_match.dataset_id)
-    reject_match_score = bool(reject_match.user_id) + bool(reject_match.dataset_id)
-
-    if approve_match_score < reject_match_score:
+    if approve_rule_score < reject_rule_score:
+        print("reject")
         return False
-    elif approve_match_score > reject_match_score:
+    elif approve_rule_score > reject_rule_score:
+        print("approve")
         return True
     else:
+        print("None")
         return None
