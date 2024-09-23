@@ -3,14 +3,16 @@ require("@nomicfoundation/hardhat-verify")
 require("@nomicfoundation/hardhat-chai-matchers")
 require("dotenv").config();
 
-const JSON_RPC_URL = process.env.JSON_RPC_URL;
+const { PRIVATE_KEY, JSON_RPC_URL } = process.env;
 
 module.exports = {
   solidity: "0.8.24", // Adjust the version according to your contract's pragma version
   defaultNetwork: "localhost",
   networks: {
     localhost: {
-      url: JSON_RPC_URL
+      allowUnlimitedContractSize: true,
+      url: JSON_RPC_URL,
+      accounts: [`0x${PRIVATE_KEY}`]
     }
   }
 };
