@@ -11,8 +11,9 @@ var router = express.Router();
 const contractABI = require("../artifacts/contracts/GUEDHS.sol/GUEDHS.json");
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const JSON_RPC_URL = process.env.JSON_RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL);
-const signer = provider.getSigner();
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 
 router.post("/list-data-op-rule", async (req, res, next) => {
