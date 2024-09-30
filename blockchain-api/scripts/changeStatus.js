@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-    const contractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"; // Replace with your deployed contract address
+    const contractAddress = process.env.CONTRACT_ADDRESS; // Replace with your deployed contract address
     const GUEDHS = await ethers.getContractFactory("GUEDHS");
     const guedhs = GUEDHS.attach(contractAddress);
 
