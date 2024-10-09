@@ -1,4 +1,5 @@
 from prisma import Prisma
+from federated_network.governance_ui.config import config
 
 
 def populate_db():
@@ -9,7 +10,13 @@ def populate_db():
 
     if not user:
         print("Populating db with default user")
-        db.user.create(data={"name": "info", "email": "info@openmined.org", "pysyft_pwd": "changethis"})
+        db.user.create(
+            data={
+                "name": "info",
+                "email": config.pysyft_root_user_email,
+                "pysyft_pwd": config.pysyft_root_user_password,
+            }
+        )
 
     db.disconnect()
 

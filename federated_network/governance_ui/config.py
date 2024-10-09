@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +12,9 @@ class Settings(BaseSettings):
     oauth_provider_app_url: str
 
     blockchain_api_url: str
+
+    pysyft_root_user_email: Optional[str] = "info@openmined.org"
+    pysyft_root_user_password: Optional[str] = "changethis"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
 
