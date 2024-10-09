@@ -64,6 +64,7 @@ poetry install
     To set up and start the necessary services, run the following command:
 
     ```bash
+    cd ../federated_network
     docker compose up -d
     ```
 

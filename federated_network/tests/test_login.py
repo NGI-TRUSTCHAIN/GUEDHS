@@ -1,5 +1,6 @@
 from unittest.mock import Mock, patch
 from governance_ui.auth.login import login
+import pytest
 
 
 @patch("governance_ui.auth.login.sy.login")
@@ -27,9 +28,10 @@ def test_login_error(mock_login, capfd):
     email = "info@openmined.org"
     password = "wrongpassword"
 
-    client = login(url, port, email, password)
+    with pytest.raises(Exception):
+        client = login(url, port, email, password)
 
-    assert client is None
-    mock_login.assert_called_once_with(url=url, port=port, email=email, password=password)
-    out, err = capfd.readouterr()
-    assert out == "Login failed: Login failed\n"
+        assert client is None
+        mock_login.assert_called_once_with(url=url, port=port, email=email, password=password)
+        out, err = capfd.readouterr()
+        assert out == "Login failed: Login failed\n"
