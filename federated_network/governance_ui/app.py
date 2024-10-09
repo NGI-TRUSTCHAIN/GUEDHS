@@ -4,7 +4,7 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.applications import Starlette
 from starlette.routing import Route, Mount
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, JSONResponse
 from governance_ui.config import config
 
 
@@ -51,12 +51,17 @@ async def logout(request):
     return RedirectResponse(url="/app")
 
 
+async def healthcheck(request):
+    return JSONResponse({"status": "ok"})
+
+
 routes = [
     Route("/", endpoint=redirect_root),
     Mount("/app", shiny_app),
     Route("/login", endpoint=login),
     Route("/auth", endpoint=auth),
     Route("/logout", endpoint=logout),
+    Route("/healthcheck", endpoint=healthcheck),
 ]
 
 app = Starlette(routes=routes)
