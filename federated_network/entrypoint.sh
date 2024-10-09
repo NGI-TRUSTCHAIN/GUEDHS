@@ -1,6 +1,6 @@
 #!/bin/sh
 
-prisma migrate dev --schema=governance_ui/db/schema.prisma
+prisma migrate deploy --schema=governance_ui/db/schema.prisma
 
 prisma generate --schema=governance_ui/db/schema.prisma
 
