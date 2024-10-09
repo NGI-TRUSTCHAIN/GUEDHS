@@ -73,7 +73,7 @@ def access_rules_server(input, output, session):
 
         return (
             ui.div(
-                ui.h1("Decision Rules", class_="my-5"),
+                ui.h1("Access Rules", class_="my-5"),
                 ui.div(
                     ui.tooltip(
                         ui.input_action_button("apply_rules_button", play_icon, class_="custom-button p-3"),
