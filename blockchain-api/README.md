@@ -49,3 +49,18 @@ npm install
 ``` 
 localhost:3000/docs 
 ```
+
+#Kubernetes - Helm
+
+##Run the Blockchain API
+
+1. Install the packages needed to run the API
+
+```bash
+npm install
+```
+
+2. Setup and run the blockchain node - replace "node" by the helm name intended and "namespace" with the desired namespace to deploy
+```bash
+  helm install "node" ./hardhat -n "namespace"
+```
