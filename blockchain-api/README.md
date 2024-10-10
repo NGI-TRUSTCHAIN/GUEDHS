@@ -79,4 +79,4 @@ npm install
   helm install "api" ./helm -n "namespace"
 ```
 
-6. Open browser and go to "http://node-ip:30001/docs" and use the api - replace "nodeip" with the actual ip address of the worker node where the api is running
+6. Open browser and go to "http://node-ip:30001/docs" and use the api - replace "node-ip" with the actual ip address of the worker node where the api is running
