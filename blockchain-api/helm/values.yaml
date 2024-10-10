@@ -12,21 +12,6 @@ service:
   nodePort: 32000
   # Optional: Specify a static port, or Kubernetes will assign one
 
-ingress:
-  enabled: true
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  hosts:
-    - host: myblockchainapi.example.com   # Replace with your domain name
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: blockchain-api
-              port:
-                number: 3000
-
 env:
   - name: JSON_RPC_URL
     value: "http://blockchain-node-service:8545"
