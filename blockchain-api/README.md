@@ -64,3 +64,11 @@ npm install
 ```bash
   helm install "node" ./hardhat -n "namespace"
 ```
+3. Grab contract address via blockchain node logs - replace "pod_name_for_blockchain_node" with the pod name and "namespace" with the namespace where it is
+```bash
+  kubectl logs "pod_name_for_blockchain_node" -n "namespace"
+```
+
+4. Put contract address on env via values.yaml of helm/values.yaml
+
+5. 
