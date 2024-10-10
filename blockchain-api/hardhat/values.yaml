@@ -1,0 +1,12 @@
+replicaCount: 1
+
+image:
+  repository: "didioffside/blockchain-node"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8545
+  targetPort: 8545
+  nodePort: 32001
