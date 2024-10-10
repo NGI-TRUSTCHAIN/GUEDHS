@@ -8,7 +8,6 @@ Try running some of the following tasks:
 
 - Docker
 - Node
-For kubernetes/helm
 - Kubernetes (kubectl)
 - Helm
 - Kubernetes cluster
