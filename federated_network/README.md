@@ -91,3 +91,11 @@ uvicorn governance_ui.app:app
 ```
 
 The web app will be accessible at `http://guehds.local.promptly.health`.
+
+## Running the tests
+
+To run the tests and generate a CLI coverage report use the following command:
+
+```bash
+poetry run pytest --cov=governance_ui
+```
