@@ -8,6 +8,9 @@ Try running some of the following tasks:
 
 - Docker
 - Node
+- Kubernetes (kubectl)
+- Helm
+- Kubernetes cluster
 
 ## Run the Blockchain API
 
@@ -64,11 +67,16 @@ npm install
 ```bash
   helm install "node" ./hardhat -n "namespace"
 ```
-3. Grab contract address via blockchain node logs - replace "pod_name_for_blockchain_node" with the pod name and "namespace" with the namespace where it is
+3. Grab contract address and private key via blockchain node logs - replace "pod_name_for_blockchain_node" with the pod name and "namespace" with the namespace where it is
 ```bash
   kubectl logs "pod_name_for_blockchain_node" -n "namespace"
 ```
 
-4. Put contract address on env via values.yaml of helm/values.yaml
+4. Put contract address and private key on env via values.yaml of helm/values.yaml
 
-5. 
+5. Setup and run the blockchain api - replace "api" by the helm name intended and "namespace" with the desired namespace to deploy
+```bash
+  helm install "api" ./helm -n "namespace"
+```
+
+6. Open browser and go to "http://node-ip:30001/docs" and use the api - replace "nodeip" with the actual ip address of the worker node where the api is running
