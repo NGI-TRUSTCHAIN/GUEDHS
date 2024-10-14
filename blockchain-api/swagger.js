@@ -1,4 +1,7 @@
+require('dotenv').config();
+
 const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
+const port = process.env.PORT || 3000;
 
 const doc = {
     info: {
@@ -8,7 +11,7 @@ const doc = {
     },
     servers: [
         {
-            url: 'http://localhost:3000'
+            url: `http://localhost:${port}`
         }
     ],
     tags: [
@@ -79,7 +82,7 @@ const doc = {
                 $nodeId: "28d2428661e84555abcda20764aa6c8f"
             },
             userSpecificOperation: {
-                $accessId: "e8de5054a3ab4990a18d42a6b014335d",
+                $dataUserId: "e8de5054a3ab4990a18d42a6b014335d",
                 $dataCustodianId: "info@openmined.org",
                 $nodeId: "28d2428661e84555abcda20764aa6c8f"
             }

@@ -28,6 +28,7 @@
     "ethers": "^5.7.2",
     "hardhat": "^2.22.4",
     "nodemon": "^3.1.4",
+    "solidity-coverage": "^0.8.13",
     "swagger-autogen": "^2.23.7"
   }
 }

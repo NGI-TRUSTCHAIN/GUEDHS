@@ -1,7 +1,4 @@
 const { ethers } = require("ethers");
-const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
 
 require('dotenv').config({ path: '../blockchain-api/.env' });
 
@@ -11,14 +8,10 @@ var router = express.Router();
 const contractABI = require("../artifacts/contracts/GUEDHS.sol/GUEDHS.json");
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const JSON_RPC_URL = process.env.JSON_RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL);
-const signer = provider.getSigner();
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
-
-function connectWithPrivateKey(privateKey) {
-    const userWallet = new ethers.Wallet(privateKey, provider);
-    return GUEDHS.connect(userWallet);
-}
 
 router.post("/list-access", async (req, res) => {
     /* 	#swagger.tags = ['Code Request Review']
@@ -38,7 +31,7 @@ router.post("/list-access", async (req, res) => {
         const { dataCustodianId, nodeId }  = req.body;
         
         try {
-            
+
             const tx = await GUEDHS.ListOperation(
                 dataCustodianId, 
                 nodeId,

@@ -1,7 +1,4 @@
 const { ethers } = require("ethers");
-const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
 
 require('dotenv').config({ path: '../blockchain-api/.env' });
 
@@ -11,9 +8,10 @@ var router = express.Router();
 const contractABI = require("../artifacts/contracts/GUEDHS.sol/GUEDHS.json");
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const JSON_RPC_URL = process.env.JSON_RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL);
-const signer = provider.getSigner();
-const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, provider);
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+const GUEDHS = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 
 function filterLogs(logActions, dataCustodianId, nodeId) {
     if (!dataCustodianId || !nodeId) {
@@ -34,20 +32,20 @@ function mapStatus(status) {
 function parseLog(action) {
     let parsedAction = {
         status: mapStatus(action.status) || "N/A",
-        dataCustodianUUID: action.ids.dataCustodianUUID,
-        nodeUUID: action.ids.nodeUUID,
+        dataCustodianId: action.ids.dataCustodianUUID,
+        nodeId: action.ids.nodeUUID,
         timestamp: new Date(action.ids.timestamp * 1000).toString(),
         action: action.ids.action
     };
 
     if (action.ids.action.includes("dataset")) {
-        parsedAction.datasetUUID = action.uuid || "N/A";
+        parsedAction.datasetId = action.uuid || "N/A";
     } else if (action.ids.action.includes("access")) {
-        parsedAction.accessUUID = action.uuid || "N/A";
+        parsedAction.accessId = action.uuid || "N/A";
     } else if (action.ids.action.includes("data-user")) {
-        parsedAction.dataUserUUID = action.uuid || "N/A";
+        parsedAction.dataUserId = action.uuid || "N/A";
     } else {
-        parsedAction.uuid = action.uuid || "N/A";
+        parsedAction.dataOpId = action.uuid || "N/A";
     }
 
     return parsedAction;

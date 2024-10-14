@@ -15,8 +15,5 @@ COPY hardhat.config.js .
 COPY ./test ./test
 COPY ./contracts ./contracts
 
-# Expose port 8545 for the JSON-RPC connection
-EXPOSE 8545
-
 # Run the Hardhat node
 CMD ["npx", "hardhat", "test"]

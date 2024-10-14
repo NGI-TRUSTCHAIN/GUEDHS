@@ -52,11 +52,33 @@ npm install
 
 5. Run the WebAPI locally
 ```bash
-  npm start
+  npm run swagger
 ```
 
 6. Access the swagger 
 
 ``` 
 localhost:3000/docs 
+```
+
+## Test coverage
+
+1. Replace the code of hardhat.config.js to
+
+```js
+require("@nomiclabs/hardhat-ethers");
+require("@nomicfoundation/hardhat-verify")
+require("@nomicfoundation/hardhat-chai-matchers")
+require("dotenv").config();
+require("solidity-coverage")
+
+module.exports = {
+  solidity: "0.8.24", // Adjust the version according to your contract's pragma version
+  networks: {
+    hardhat: {
+      allowUnlimitedContractSize: true
+    }
+  }
+};
+
 ```

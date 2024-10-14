@@ -18,8 +18,5 @@ COPY ./views ./views
 COPY ./scripts ./scripts
 COPY ./*.js .
 
-# Expose port 8545 for the JSON-RPC connection
-EXPOSE 8545
-
 # Run the Hardhat node
 ENTRYPOINT [ "scripts/entrypoint.sh" ]
