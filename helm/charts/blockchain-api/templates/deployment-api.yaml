@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-blockchain-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blockchain-api
+  template:
+    metadata:
+      labels:
+        app: blockchain-api
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: blockchain-api
+        image: {{ .Values.blockchainApi.image.repository }}:{{ .Values.blockchainApi.image.tag }}
+        imagePullPolicy: {{ .Values.blockchainApi.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.blockchainApi.port }}
+        env:
+        - name: JSON_RPC_URL
+          value: "http://{{ .Release.Name }}-blockchain-node:{{ .Values.blockchainNode.port }}/"

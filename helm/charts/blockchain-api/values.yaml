@@ -1,0 +1,19 @@
+# Default values for blockchain-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+blockchainNode:
+  image:
+    repository: 224714024160.dkr.ecr.eu-central-1.amazonaws.com/trustchain
+    tag: blockchain-node-v1
+    imagePullPolicy: Always
+  port: 8545
+
+blockchainApi:
+  image:
+    repository: 224714024160.dkr.ecr.eu-central-1.amazonaws.com/trustchain
+    tag: blockchain-api-v1
+    imagePullPolicy: Always
+  port: 3000
+
+imagePullSecrets: []

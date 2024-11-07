@@ -1,0 +1,78 @@
+syft:
+  node:
+    name: chuc-syft
+    rootEmail: chuc-syft@promptlyhealth.com
+    resourcesPreset: micro
+    env: 
+      - name: DEFAULT_ROOT_USERNAME
+        value: CHUC Admin
+
+  mongo:
+    resourcesPreset: nano
+    secretKeyName: pysyft
+
+  frontend:
+    resourcesPreset: micro
+
+  seaweedfs:
+    resourcesPreset: nano
+
+  proxy:
+    resourcesPreset: nano
+
+  registry:
+    resourcesPreset: nano
+
+  ingress:
+    # Ingress disabled due to the base chart defining a conflicting defaultBackend
+    annotations: null
+
+guehds:
+  nameOverride: guehds
+  fullnameOverride: guehds
+  imagePullSecrets:
+    - name: docker-ecr-credentials
+  ingress:
+    enabled: true
+    className: tailscale
+    annotations:
+      tailscale.com/expose: "true"
+    hosts:
+      - paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - guehds-sde-chuc
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  envFrom:
+    - secretRef:
+        name: guehds
+  env:
+    - name: pysyft_url
+      value:
+    - name: pysyft_port
+      value:
+    - name: fusionauth_client_id
+      value:
+    - name: oauth_provider_auth_url
+      value:
+    - name: oauth_provider_app_url
+      value:
+    - name: blockchain_api_url
+      value:
+    - name: POSTGRES_USER
+      value:
+    - name: POSTGRES_DB
+      value:
+    - name: POSTGRES_PORT
+      value:
+
+blockchain-api:
+  imagePullSecrets:
+    - name: docker-ecr-credentials
