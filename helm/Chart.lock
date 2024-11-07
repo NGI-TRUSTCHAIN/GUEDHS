@@ -1,0 +1,12 @@
+dependencies:
+- name: syft
+  repository: https://openmined.github.io/PySyft/helm
+  version: 0.8.6
+- name: guehds
+  repository: ""
+  version: 0.1.0
+- name: blockchain-api
+  repository: ""
+  version: 0.1.0
+digest: sha256:e89001f219935b362558f53088794247e154558c5a642de502d2bcf910c1042f
+generated: "2024-10-08T16:32:39.100863+01:00"
