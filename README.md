@@ -7,7 +7,7 @@ Official repository for the GUEHDS project.
 ## Modules
 
 - [Federated Network](./federated_network/README.md)
-- [Data Governance](./data_governance/README.md)
+- [Blockchain API](./blockchain-api/README.md)
 
 ## Requirements
 
