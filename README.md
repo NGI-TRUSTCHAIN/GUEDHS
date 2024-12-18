@@ -15,6 +15,11 @@ You can watch a video of the product demo [here](https://eurodyn.sharepoint.com/
 
 ## Requirements
 
+- MacOS or Linux
+- Docker and Docker Compose
 - Python 3.11+
 - Poetry
-- Docker
+
+## Setup
+
+Each module has setup instructions on their README. You can also see a video showing the setup in action.

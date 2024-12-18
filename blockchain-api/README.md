@@ -9,7 +9,7 @@ Try running some of the following tasks:
 - Docker
 - Node
 
-## Run for testing
+## Demo Setup
 
 All the components have been dockerized, so to run the API for testing purposes you simply have to run the following command:
 
@@ -21,7 +21,11 @@ This will start all the required services, and you will be able to observe the l
 
 The API will also be operational on `localhost:3000`, and you can access the swagger documentation on `localhost:3000/docs` and experiment with the endpoints.
 
-## Run for development
+### Cleaning up
+
+Simply run `docker compose down --volumes` to clear all the containers associated with the service.
+
+## Development Setup
 
 1. Install the packages needed to run the API
 
