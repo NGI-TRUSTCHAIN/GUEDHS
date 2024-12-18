@@ -72,6 +72,12 @@ To interact with the portal as a Data Owner, access the portal at `http://guehds
 
 Explore and interact with the federated network as a Data Scientist by following the examples available in the [notebooks](./notebooks) directory.
 
+You can start a jupyter notebook server by running:
+
+```
+poetry run jupyter notebook --no-browser
+```
+
 ### Cleaning up
 
 You can clean up the setup by doing the following:
