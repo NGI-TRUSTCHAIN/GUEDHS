@@ -27,13 +27,13 @@ poetry install
 
 1. Make sure you install the project dependencies as detailed above with `poetry install`.
 
-1. Create a `.env` file in the root of the project with the following content, by copying the `.env.example` file:
+2. Create a `.env` file in the root of the project with the following content, by copying the `.env.example` file:
 
     ```bash
     cp .env.example .env
     ```
 
-2. Setup `/etc/hosts`:
+3. Setup `/etc/hosts`:
 
     Add the following entries to your `/etc/hosts` file:
 
@@ -44,7 +44,7 @@ poetry install
     127.0.0.1   blockchain.local.promptly.health
     ```
 
-3. To start the PyGrid domain network, run the following command:
+4. To start the PyGrid domain network, run the following command:
 
     ```bash
     poetry run hagrid launch domain
@@ -53,21 +53,11 @@ poetry install
     This will launch a PyGrid domain at `http://syft.local.promptly.health`.
     Make note of the name (in green in the CLI) that is given to the node, as you will need it for cleanup later.
 
-4. Start the Blockchain Service
-
-    To start the blockchain service, run the following command:
-
-    ```bash
-    cd ../blockchain-api
-    docker compose up -d
-    ```
-
 5. Start the Docker Containers
 
     To set up and start the necessary services, run the following command:
 
     ```bash
-    cd ../federated_network
     docker compose up -d
     ```
 
