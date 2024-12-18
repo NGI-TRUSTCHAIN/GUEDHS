@@ -1,5 +1,5 @@
 from prisma import Prisma
-from federated_network.governance_ui.config import config
+from governance_ui.config import config
 
 
 def populate_db():
