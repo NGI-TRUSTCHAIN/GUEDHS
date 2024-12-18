@@ -51,6 +51,7 @@ poetry install
     ```
 
     This will launch a PyGrid domain at `http://syft.local.promptly.health`.
+    Make note of the name (in green in the CLI) that is given to the node, as you will need it for cleanup later.
 
 4. Start the Blockchain Service
 
