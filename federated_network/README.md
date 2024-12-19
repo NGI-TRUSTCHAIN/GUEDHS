@@ -19,19 +19,21 @@ poetry install
 ```
 
 
-## Setup
+## Demo Setup
 
 ### Project Setup
 
-**Note:** Run all commands from the `federated_network` directory.
+**Note:** Run all commands from the `federated_network` directory. You should have already followed the test setup guide for [blockchain-api](../blockchain-api/README.md).
 
-1. Create a `.env` file in the root of the project with the following content, by copying the `.env.example` file:
+1. Make sure you install the project dependencies as detailed above with `poetry install`.
+
+2. Create a `.env` file in the root of the project with the following content, by copying the `.env.example` file:
 
     ```bash
     cp .env.example .env
     ```
 
-2. Setup `/etc/hosts`:
+3. Setup `/etc/hosts`:
 
     Add the following entries to your `/etc/hosts` file:
 
@@ -42,29 +44,20 @@ poetry install
     127.0.0.1   blockchain.local.promptly.health
     ```
 
-3. To start the PyGrid domain network, run the following command:
+4. To start the PyGrid domain network, run the following command:
 
     ```bash
-    hagrid launch domain
+    poetry run hagrid launch domain
     ```
 
     This will launch a PyGrid domain at `http://syft.local.promptly.health`.
-
-4. Start the Blockchain Service
-
-    To start the blockchain service, run the following command:
-
-    ```bash
-    cd ../blockchain-api
-    docker compose up -d
-    ```
+    Make note of the name (in green in the CLI) that is given to the node, as you will need it for cleanup later.
 
 5. Start the Docker Containers
 
     To set up and start the necessary services, run the following command:
 
     ```bash
-    cd ../federated_network
     docker compose up -d
     ```
 
@@ -79,8 +72,26 @@ To interact with the portal as a Data Owner, access the portal at `http://guehds
 
 Explore and interact with the federated network as a Data Scientist by following the examples available in the [notebooks](./notebooks) directory.
 
+You can start a jupyter notebook server by running:
 
-## Local Setup - Development
+```
+poetry run jupyter notebook --no-browser
+```
+
+### Cleaning up
+
+You can clean up the setup by doing the following:
+
+1. Run `docker compose down --volumes` to clear federated network containers.
+
+2. Run `./remove_pysyft.sh [YOUR_PYSYFT_NODE_NAME]` to clear pysyft containers (you may need to run `chmod +x ./remove_pysyft.sh`).
+
+3. Remove the added entries from your `/etc/hosts` file.
+
+4. Follow the clean up guide on [blockchain-api](../blockchain-api/README.md).
+
+
+## Development Setup
 
 For local development, you can run the GUEHDS Portal locally, the rest of the services will be running in Docker containers.
 

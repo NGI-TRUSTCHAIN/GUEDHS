@@ -15,6 +15,11 @@ You can watch a video of the product demo [here](https://eurodyn.sharepoint.com/
 
 ## Requirements
 
+- MacOS or Linux
+- Docker and Docker Compose
 - Python 3.11+
 - Poetry
-- Docker
+
+## Setup
+
+Each module has setup instructions on their README. You can also see a video showing the setup in action [here](https://eurodyn.sharepoint.com/:v:/r/sites/TRUSTCHAIN/Shared%20Documents/OC2-User%20privacy%20and%20data%20governance/OC2%20GUEDHS/3-Deliverables/GUEHDS%20Setup%20Demo.mp4?csf=1&web=1&e=ThPUNp).
